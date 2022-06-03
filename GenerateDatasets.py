@@ -207,8 +207,8 @@ def oversampleMinority(class1, class1_label, class2, class2_label):
                     count_class2_all_elements+=1
 
     elif num_class2>num_class1:
-        difference = class2-class1
-        num_loops = math.ceil(difference/class1)
+        difference = len(class2)-len(class1)
+        num_loops = math.ceil(difference/len(class1))
         for i in range(len(class1)):
             all_elements.append(class1[i])
             all_labels.append(class1_label)
@@ -225,7 +225,7 @@ def oversampleMinority(class1, class1_label, class2, class2_label):
                     count_class1_all_elements+=1
 
 
-
+    all_elements,all_labels = shuffle(all_elements,all_labels,random_state=0)
     return all_elements, all_labels
 
 oversampled =oversampleDyck1Minority(dataset_valid,dataset_invalid)
@@ -286,7 +286,7 @@ class Count_Task_Bracket_Generator(object):
         positive = []
         zero_neg = []
         generate()
-        return pos, zero_neg
+        return positive, zero_neg
 
 
 def generateCountDataset(n_bracket_pairs_start, n_bracket_pairs_end):
@@ -326,6 +326,12 @@ print(generateLabelledCountDataset(4,4))
 
 
 print(generateLabelledCountDataset(8,8))
+
+seqsCount4TokensPos,seqsCount4TokensZeroNeg = generateCountDataset(2,2)
+count_seqs, count_labels = oversampleMinority(seqsCount4TokensPos,'Pos',seqsCount4TokensZeroNeg,'ZeroNeg')
+print(count_seqs)
+print(count_labels)
+
 
 # print(generateLabelledCountDataset(10,10))
 # print(generateLabelledCountDataset(15,15))
