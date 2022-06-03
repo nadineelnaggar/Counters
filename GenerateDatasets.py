@@ -168,6 +168,66 @@ def oversampleDyck1Minority(valid, invalid):
 
     return all_elements
 
+def oversampleMinority(class1, class1_label, class2, class2_label):
+    num_class1 = len(class1)
+    num_class2 = len(class2)
+
+    # difference = len(invalid)-len(valid)
+    all_elements = []
+    all_labels = []
+    count_class1_all_elements = 0
+    count_class2_all_elements = 0
+
+    if num_class1==num_class2:
+        for i in range(len(class1)):
+            all_elements.append(class1[i])
+            all_labels.append(class1_label)
+            count_class1_all_elements+=1
+            all_elements.append(class2[i])
+            all_labels.append(class2_label)
+            count_class2_all_elements+=1
+
+    elif num_class1>num_class2:
+        difference = class1-class2
+        num_loops = math.ceil(difference/class2)
+        for i in range(len(class1)):
+            all_elements.append(class1[i])
+            all_labels.append(class1_label)
+            count_class1_all_elements+=1
+        for i in range(len(class2)):
+            all_elements.append(class2[i])
+            all_labels.append(class2_label)
+            count_class2_all_elements+=1
+
+        for i in range(num_loops):
+            for j in range(len(class2)):
+                if count_class2_all_elements<count_class1_all_elements:
+                    all_elements.append(class2[j])
+                    all_labels.append(class2_label)
+                    count_class2_all_elements+=1
+
+    elif num_class2>num_class1:
+        difference = class2-class1
+        num_loops = math.ceil(difference/class1)
+        for i in range(len(class1)):
+            all_elements.append(class1[i])
+            all_labels.append(class1_label)
+            count_class1_all_elements+=1
+        for i in range(len(class2)):
+            all_elements.append(class2[i])
+            all_labels.append(class2_label)
+            count_class2_all_elements+=1
+        for i in range(num_loops):
+            for j in range(len(class1)):
+                if count_class1_all_elements<count_class2_all_elements:
+                    all_elements.append(class1[i])
+                    all_labels.append(class1_label)
+                    count_class1_all_elements+=1
+
+
+
+    return all_elements, all_labels
+
 oversampled =oversampleDyck1Minority(dataset_valid,dataset_invalid)
 oversampled1=oversampleDyck1Minority(dataset_valid1,dataset_invalid1)
 
@@ -254,12 +314,18 @@ def generateLabelledCountDataset(n_bracket_pairs_start,n_bracket_pairs_end):
         sentences.append(elem)
         labels.append('Pos')
     for elem in zero_neg:
-        entry = (elem,'LEQ_Zero')
+        entry = (elem,'Zero_Neg')
         dataset.append(entry)
         sentences.append(elem)
-        labels.append('LEQ_Zero')
+        labels.append('Zero_Neg')
     sentences, labels = shuffle(sentences, labels,random_state=0)
     return sentences, labels
 
 print(generateLabelledCountDataset(2,2))
 print(generateLabelledCountDataset(4,4))
+
+
+print(generateLabelledCountDataset(8,8))
+
+# print(generateLabelledCountDataset(10,10))
+# print(generateLabelledCountDataset(15,15))
