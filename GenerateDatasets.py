@@ -321,11 +321,11 @@ def generateLabelledCountDataset(n_bracket_pairs_start,n_bracket_pairs_end):
     sentences, labels = shuffle(sentences, labels,random_state=0)
     return sentences, labels
 
-print(generateLabelledCountDataset(2,2))
-print(generateLabelledCountDataset(4,4))
+# print(generateLabelledCountDataset(2,2))
+# print(generateLabelledCountDataset(4,4))
 
 
-print(generateLabelledCountDataset(8,8))
+# print(generateLabelledCountDataset(8,8))
 
 seqsCount4TokensPos,seqsCount4TokensZeroNeg = generateCountDataset(2,2)
 count_seqs, count_labels = oversampleMinority(seqsCount4TokensPos,'Pos',seqsCount4TokensZeroNeg,'ZeroNeg')
