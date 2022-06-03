@@ -332,6 +332,7 @@ count_seqs, count_labels = oversampleMinority(seqsCount4TokensPos,'Pos',seqsCoun
 print(count_seqs)
 print(count_labels)
 
+#GENERATE THE LONGER SETS BY USING THE SUZGUN SEQUENCES AND THEN ADAPTING THEM TO MAKE THEM INVALID OR WHATEVER, TO MATCH THE DATASETS WE NEED
 
 # print(generateLabelledCountDataset(10,10))
 # print(generateLabelledCountDataset(15,15))
