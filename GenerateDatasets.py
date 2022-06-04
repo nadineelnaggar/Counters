@@ -379,8 +379,26 @@ for i in range(len(count8_seqs)):
 
 count_upto8_seqs,count_upto8_labels = shuffle(count_upto8_seqs,count_upto8_labels)
 
+with open('CounterDataset2Tokens.txt','w') as f:
+    f.write('')
 
-with open('CountDataset2Tokens.txt','a') as f:
+with open('CounterDataset4Tokens.txt','w') as f:
+    f.write('')
+
+with open('CounterDataset8Tokens.txt','w') as f:
+    f.write('')
+
+
+with open('Dyck1Dataset2Tokens.txt','w') as f:
+    f.write('')
+
+with open('Dyck1Dataset4Tokens.txt','w') as f:
+    f.write('')
+
+with open('Dyck1Dataset8Tokens.txt','w') as f:
+    f.write('')
+
+with open('CounterDataset2Tokens.txt','a') as f:
     for i in range(len(count2_seqs)):
         f.write(count2_seqs[i]+','+count2_labels[i]+'\n')
 
