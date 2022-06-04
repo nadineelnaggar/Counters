@@ -26,9 +26,9 @@ class LinearBracketCounter(nn.Module):
         return x, previous_count
 
 
-class NonZeroDyck1Counter(nn.Module):
+class NonZeroReLUCounter(nn.Module):
     def __init__(self,counter_input_size, counter_output_size, output_size, initialisation='random',output_activation='Sigmoid'):
-        super(NonZeroDyck1Counter, self).__init__()
+        super(NonZeroReLUCounter, self).__init__()
         self.open_bracket_filter = nn.Linear(in_features=2,out_features=1,bias=False)
         # self.close_bracket_filter = nn.ReLU(nn.Linear(in_features=2,out_features=1,bias=False))
         self.close_bracket_filter = nn.Linear(in_features=2, out_features=1, bias=False)
