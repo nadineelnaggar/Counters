@@ -109,21 +109,21 @@ class NonZeroReLUCounter(nn.Module):
             output=torch.clamp(output,min=0,max=1)
         return output, opening_brackets, closing_brackets, surplus_closing_brackets
 
-
-model = NonZeroReLUCounter(counter_input_size=2, counter_output_size=1,output_size=1,initialisation='correct',output_activation='Clipping')
-
-opening_brackets = torch.tensor(0,dtype=torch.float32)
-closing_brackets = torch.tensor(0,dtype=torch.float32)
-excess_closing_brackets = torch.tensor(0,dtype=torch.float32)
-x = torch.tensor([1,0],dtype=torch.float32)
-
-# print(model(x,opening_brackets,closing_brackets,excess_closing_brackets))
-x = torch.tensor([[1,0],[0,1],[1,0],[1,0],[0,1],[0,1],[0,1],[1,0]],dtype=torch.float32)
-for i in range(len(x)):
-    print('x[i] = ',x[i])
-    output, opening_brackets,closing_brackets, excess_closing_brackets = model(x[i],opening_brackets,closing_brackets,excess_closing_brackets)
-    print('output = ',output)
-    print('opening brackets = ',opening_brackets)
-    print('closing brackets = ',closing_brackets)
-    print('excess closing brackets = ',excess_closing_brackets)
-    print('**********************')
+#
+# model = NonZeroReLUCounter(counter_input_size=2, counter_output_size=1,output_size=1,initialisation='correct',output_activation='Clipping')
+#
+# opening_brackets = torch.tensor(0,dtype=torch.float32)
+# closing_brackets = torch.tensor(0,dtype=torch.float32)
+# excess_closing_brackets = torch.tensor(0,dtype=torch.float32)
+# x = torch.tensor([1,0],dtype=torch.float32)
+#
+# # print(model(x,opening_brackets,closing_brackets,excess_closing_brackets))
+# x = torch.tensor([[1,0],[0,1],[1,0],[1,0],[0,1],[0,1],[0,1],[1,0]],dtype=torch.float32)
+# for i in range(len(x)):
+#     print('x[i] = ',x[i])
+#     output, opening_brackets,closing_brackets, excess_closing_brackets = model(x[i],opening_brackets,closing_brackets,excess_closing_brackets)
+#     print('output = ',output)
+#     print('opening brackets = ',opening_brackets)
+#     print('closing brackets = ',closing_brackets)
+#     print('excess closing brackets = ',excess_closing_brackets)
+#     print('**********************')
