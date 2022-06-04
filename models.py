@@ -110,7 +110,7 @@ class NonZeroReLUCounter(nn.Module):
         return output, opening_brackets, closing_brackets, surplus_closing_brackets
 
 
-model = NonZeroDyck1Counter(counter_input_size=2, counter_output_size=1,output_size=1,initialisation='correct',output_activation='Clipping')
+model = NonZeroReLUCounter(counter_input_size=2, counter_output_size=1,output_size=1,initialisation='correct',output_activation='Clipping')
 
 opening_brackets = torch.tensor(0,dtype=torch.float32)
 closing_brackets = torch.tensor(0,dtype=torch.float32)
