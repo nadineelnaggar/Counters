@@ -43,7 +43,7 @@ task = args.task
 initialisation=args.initialisation
 
 # num_epochs = 50
-num_runs = 5
+num_runs = 10
 learning_rate = 0.005
 checkpoint_step=1
 
