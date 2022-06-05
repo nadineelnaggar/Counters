@@ -131,6 +131,7 @@ def make_invalid_wrong_order(seqs):
         for j in range(len(timestep_depths)):
             if timestep_depths[j]==0:
                 zero_depth_indices.append(j)
+        # zero_depth_indices.append(len(seq))
         print('timestep depths = ',timestep_depths)
         print('zero depth indices = ',zero_depth_indices)
 
