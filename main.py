@@ -70,7 +70,7 @@ elif runtime=='colab':
     path = "/content/drive/MyDrive/PhD/EXPT_LOGS/Counters/"+str(task)+"/"
 
 
-prefix = path+output_activation+"_activation"+str(train_seq_length)+'train_seq_length_'+initialisation+"_initialisation_"+str(num_epochs)+"epochs"
+prefix = path+output_activation+"_activation_"+str(train_seq_length)+'train_seq_length_'+initialisation+"_initialisation_"+str(num_epochs)+"epochs"
 
 file_name = prefix+'.txt'
 train_log = prefix+'_TRAIN LOG.txt'
