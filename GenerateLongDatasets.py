@@ -47,17 +47,17 @@ def make_incomplete(seqs):
 
 
         seq = seqs[i]
-        print('seq before changing = ',seq)
-        print('change bracket indices = ',changed_bracket_indices)
+        # print('seq before changing = ',seq)
+        # print('change bracket indices = ',changed_bracket_indices)
         for j in range(len(changed_bracket_indices)):
             idx = changed_bracket_indices[j]
             seq = seq[:idx]+'('+seq[idx+1:]
-        print('seq after changing = ',seq)
+        # print('seq after changing = ',seq)
         new_seqs.append(seq)
         # print(num_close_brackets)
         # print(num_changed_brackets)
-        print('num open brackets = ', seq.count('('))
-        print('num close brackets = ', seq.count(')'))
+        # print('num open brackets = ', seq.count('('))
+        # print('num close brackets = ', seq.count(')'))
     return new_seqs
 
 
@@ -85,17 +85,17 @@ def make_invalid_excess_close(seqs):
         changed_bracket_indices.sort()
 
         seq = seqs[i]
-        print('seq before changing = ',seq)
-        print('change bracket indices = ',changed_bracket_indices)
+        # print('seq before changing = ',seq)
+        # print('change bracket indices = ',changed_bracket_indices)
         for j in range(len(changed_bracket_indices)):
             idx = changed_bracket_indices[j]
             seq = seq[:idx]+')'+seq[idx+1:]
-        print('seq after changing = ',seq)
+        # print('seq after changing = ',seq)
         new_seqs.append(seq)
         # print('num open brackets = ',num_open_brackets)
         # print('num close brackets = ',num_changed_brackets)
-        print('num open brackets = ', seq.count('('))
-        print('num close brackets = ', seq.count(')'))
+        # print('num open brackets = ', seq.count('('))
+        # print('num close brackets = ', seq.count(')'))
     return new_seqs
 
 print('***************************')
@@ -132,8 +132,8 @@ def make_invalid_wrong_order(seqs):
             if timestep_depths[j]==0:
                 zero_depth_indices.append(j)
         # zero_depth_indices.append(len(seq))
-        print('timestep depths = ',timestep_depths)
-        print('zero depth indices = ',zero_depth_indices)
+        # print('timestep depths = ',timestep_depths)
+        # print('zero depth indices = ',zero_depth_indices)
 
         num_zeros = len(zero_depth_indices)
 
@@ -149,27 +149,27 @@ def make_invalid_wrong_order(seqs):
         changed_indices.sort()
 
         # seq = seqs[i]
-        print('seq before changing = ',seq)
-        print('change bracket indices = ',changed_indices)
+        # print('seq before changing = ',seq)
+        # print('change bracket indices = ',changed_indices)
         # print('change close bracket indices = ', changed_close_bracket_indices)
         for j in range(len(changed_indices)):
             idx = changed_indices[j]
             if idx!=(len(seq)-1):
-                print('seq[:idx+1] = ',seq[:idx+1])
-                print('seq[idx+3:]',seq[idx+3:])
+                # print('seq[:idx+1] = ',seq[:idx+1])
+                # print('seq[idx+3:]',seq[idx+3:])
                 # seq = seq[:idx+1]+')('+seq[idx+3:]
                 seq = seq[:idx + 1] + ')' + seq[idx + 1:len(seq) - 1]
-                print('num opening brackets = ', seq.count('('))
-                print('num closing brackets = ', seq.count(')'))
+                # print('num opening brackets = ', seq.count('('))
+                # print('num closing brackets = ', seq.count(')'))
                 # print('seq after changing first = ',seq)
             elif idx==len(seq)-1:
                 # seq = ')'+seq[:len(seq)-1]
                 seq = seq[1:] + '('
             # elif idx == -1:
             #     seq = ')' + seq[:len(seq) - 1]
-        print('seq after changing = ',seq)
-        print('num opening brackets = ',seq.count('('))
-        print('num closing brackets = ',seq.count(')'))
+        # print('seq after changing = ',seq)
+        # print('num opening brackets = ',seq.count('('))
+        # print('num closing brackets = ',seq.count(')'))
         new_seqs.append(seq)
         # print(num_open_brackets)
         print(num_changed_brackets)
@@ -245,10 +245,56 @@ print(len(dyck_seqs_20_incomplete))
 print(len(dyck_seqs_20_invalid_excess_close))
 print(len(dyck_seqs_20_invalid_wrong_order))
 
+
+dyck1_seqs_20 = []
+dyck1_labels_20 = []
+for i in range(len(dyck_seqs_20_valid)):
+    dyck1_seqs_20.append(dyck_seqs_20_valid[i])
+    dyck1_labels_20.append('valid')
+
+for i in range(len(dyck_seqs_20_incomplete)):
+    dyck1_seqs_20.append(dyck_seqs_20_incomplete[i])
+    dyck1_labels_20.append('invalid')
+
+for i in range(len(dyck_seqs_20_invalid_excess_close)):
+    dyck1_seqs_20.append(dyck_seqs_20_invalid_excess_close[i])
+    dyck1_labels_20.append('invalid')
+
+for i in range(len(dyck_seqs_20_invalid_wrong_order)):
+    dyck1_seqs_20.append(dyck_seqs_20_invalid_wrong_order[i])
+    dyck1_labels_20.append('invalid')
+
+with open('CounterDataset20Tokens.txt','w') as f:
+    f.write('')
+
 dyck_seqs_30_valid = seqs_30[:75]
 dyck_seqs_30_invalid_wrong_order = seqs_30[75:100]
 dyck_seqs_30_invalid_excess_close = seqs_30[100:125]
 dyck_seqs_30_incomplete = seqs_30[125:150]
+
+dyck_seqs_30_incomplete = make_incomplete(dyck_seqs_30_incomplete)
+dyck_seqs_30_invalid_wrong_order=make_invalid_wrong_order(dyck_seqs_30_invalid_wrong_order)
+dyck_seqs_30_invalid_excess_close=make_invalid_excess_close(dyck_seqs_30_invalid_excess_close)
+
+
+dyck1_seqs_30 = []
+dyck1_labels_30 = []
+for i in range(len(dyck_seqs_30_valid)):
+    dyck1_seqs_30.append(dyck_seqs_30_valid[i])
+    dyck1_labels_30.append('valid')
+
+for i in range(len(dyck_seqs_30_incomplete)):
+    dyck1_seqs_30.append(dyck_seqs_30_incomplete[i])
+    dyck1_labels_30.append('invalid')
+
+for i in range(len(dyck_seqs_30_invalid_excess_close)):
+    dyck1_seqs_30.append(dyck_seqs_30_invalid_excess_close[i])
+    dyck1_labels_30.append('invalid')
+
+for i in range(len(dyck_seqs_30_invalid_wrong_order)):
+    dyck1_seqs_30.append(dyck_seqs_30_invalid_wrong_order[i])
+    dyck1_labels_30.append('invalid')
+
 
 
 
@@ -257,12 +303,57 @@ dyck_seqs_40_invalid_wrong_order = seqs_40[75:100]
 dyck_seqs_40_invalid_excess_close = seqs_40[100:125]
 dyck_seqs_40_incomplete = seqs_40[125:150]
 
+dyck_seqs_40_incomplete = make_incomplete(dyck_seqs_40_incomplete)
+dyck_seqs_40_invalid_wrong_order=make_invalid_wrong_order(dyck_seqs_40_invalid_wrong_order)
+dyck_seqs_40_invalid_excess_close=make_invalid_excess_close(dyck_seqs_40_invalid_excess_close)
 
+
+dyck1_seqs_40 = []
+dyck1_labels_40 = []
+for i in range(len(dyck_seqs_40_valid)):
+    dyck1_seqs_40.append(dyck_seqs_40_valid[i])
+    dyck1_labels_40.append('valid')
+
+for i in range(len(dyck_seqs_40_incomplete)):
+    dyck1_seqs_40.append(dyck_seqs_40_incomplete[i])
+    dyck1_labels_40.append('invalid')
+
+for i in range(len(dyck_seqs_40_invalid_excess_close)):
+    dyck1_seqs_40.append(dyck_seqs_40_invalid_excess_close[i])
+    dyck1_labels_40.append('invalid')
+
+for i in range(len(dyck_seqs_40_invalid_wrong_order)):
+    dyck1_seqs_40.append(dyck_seqs_40_invalid_wrong_order[i])
+    dyck1_labels_40.append('invalid')
 
 dyck_seqs_50_valid = seqs_50[:75]
 dyck_seqs_50_invalid_wrong_order = seqs_50[75:100]
 dyck_seqs_50_invalid_excess_close = seqs_50[100:125]
 dyck_seqs_50_incomplete = seqs_50[125:150]
+
+
+dyck_seqs_50_incomplete = make_incomplete(dyck_seqs_50_incomplete)
+dyck_seqs_50_invalid_wrong_order=make_invalid_wrong_order(dyck_seqs_50_invalid_wrong_order)
+dyck_seqs_50_invalid_excess_close=make_invalid_excess_close(dyck_seqs_50_invalid_excess_close)
+
+
+dyck1_seqs_50 = []
+dyck1_labels_50 = []
+for i in range(len(dyck_seqs_50_valid)):
+    dyck1_seqs_50.append(dyck_seqs_50_valid[i])
+    dyck1_labels_50.append('valid')
+
+for i in range(len(dyck_seqs_50_incomplete)):
+    dyck1_seqs_50.append(dyck_seqs_50_incomplete[i])
+    dyck1_labels_50.append('invalid')
+
+for i in range(len(dyck_seqs_50_invalid_excess_close)):
+    dyck1_seqs_50.append(dyck_seqs_50_invalid_excess_close[i])
+    dyck1_labels_50.append('invalid')
+
+for i in range(len(dyck_seqs_50_invalid_wrong_order)):
+    dyck1_seqs_50.append(dyck_seqs_50_invalid_wrong_order[i])
+    dyck1_labels_50.append('invalid')
 
 ###################################
 
@@ -279,79 +370,52 @@ valid, invalid excess close and invalid wrong order will be labelled final count
 
 """
 
-count_seqs_20_valid = []
-count_seqs_20_invalid_wrong_order = []
-count_seqs_20_invalid_excess_close = []
-count_seqs_20_incomplete = []
+count_seqs_20_valid = seqs_20[:25]
+count_seqs_20_invalid_wrong_order = seqs_20[25:50]
+count_seqs_20_invalid_excess_close = seqs_20[50:75]
+count_seqs_20_incomplete = seqs_20[75:150]
 
 
-count_seqs_30_valid = []
-count_seqs_30_invalid_wrong_order = []
-count_seqs_30_invalid_excess_close = []
-count_seqs_30_incomplete = []
-
-
-
-count_seqs_40_valid = []
-count_seqs_40_invalid_wrong_order = []
-count_seqs_40_invalid_excess_close = []
-count_seqs_40_incomplete = []
+count_seqs_30_valid = seqs_30[:25]
+count_seqs_30_invalid_wrong_order = seqs_30[25:50]
+count_seqs_30_invalid_excess_close = seqs_30[50:75]
+count_seqs_30_incomplete = seqs_30[75:150]
 
 
 
-count_seqs_50_valid = []
-count_seqs_50_invalid_wrong_order = []
-count_seqs_50_invalid_excess_close = []
-count_seqs_50_incomplete = []
+count_seqs_40_valid = seqs_40[:25]
+count_seqs_40_invalid_wrong_order = seqs_40[25:50]
+count_seqs_40_invalid_excess_close = seqs_40[50:75]
+count_seqs_40_incomplete = seqs_40[75:150]
 
 
 
-#
-# def make_incomplete(indices, seqs, labels):
-#     """
-#     input a valid sequence and distort it to make it potentially valid by
-#         - replacing one or more closing brackets in a random location with an opening bracket
-#     :return:
-#     """
-#
-#     for i in range(len(indices)):
-#         # seq = seqs[indices[i]]
-#         seq = seqs[i]
-#         count_zeros = 0
-#         indices_zeros = []
-#         label = labels[i]
-#
-#         for j, char in enumerate(label):
-#             if char == '0':
-#                 count_zeros += 1
-#                 indices_zeros.append(j)
-#
-#         print('length of original seq = ', len(seq))
-#         print('initial number of opening brackets = ', seq.count('('))
-#         print('initial number of closing brackets = ', seq.count(')'))
-#         print('count_zeros for seq ', seq, ' = ', count_zeros)
-#         print('indices_zeros for seq ', seq, ' = ', indices_zeros)
-#         rand_idx = randint(0, len(indices_zeros))
-#         print('rand_idx for seq', seq, ' = ', rand_idx)
-#         if rand_idx == len(indices_zeros):
-#             changed_idx = 0
-#         elif rand_idx < len(indices_zeros):
-#             changed_idx = indices_zeros[rand_idx]
-#         print('changed idx for seq ', seq, ' = ', changed_idx)
-#
-#         if changed_idx == 0:
-#             seq = '(' + seq[0:len(seq) - 1]
-#         elif changed_idx > 0:
-#             seq = seq[:changed_idx] + '(' + seq[changed_idx + 1:]
-#
-#         print('changed seq = ', seq)
-#         print('length of changed sequence = ', len(seq))
-#         print('final number of opening brackets = ', seq.count('('))
-#         print('final number of closing brackets = ', seq.count(')'))
-#         print('incomplete')
-#         print('***************************')
-#         # seqs[indices[i]] = seq
-#         seqs[i] = seq
-#
-#
-#     return seqs
+count_seqs_50_valid = seqs_50[:25]
+count_seqs_50_invalid_wrong_order = seqs_50[25:50]
+count_seqs_50_invalid_excess_close = seqs_50[50:75]
+count_seqs_50_incomplete = seqs_50[75:150]
+
+
+with open('CounterDataset20Tokens.txt','w') as f:
+    f.write('')
+
+with open('CounterDataset30Tokens.txt','w') as f:
+    f.write('')
+
+with open('CounterDataset40Tokens.txt','w') as f:
+    f.write('')
+
+with open('CounterDataset50Tokens.txt','w') as f:
+    f.write('')
+
+with open('Dyck1Dataset20Tokens.txt', 'w') as f:
+    f.write('')
+
+with open('Dyck1Dataset30Tokens.txt', 'w') as f:
+    f.write('')
+
+with open('Dyck1Dataset40Tokens.txt', 'w') as f:
+    f.write('')
+
+with open('Dyck1Dataset50Tokens.txt', 'w') as f:
+    f.write('')
