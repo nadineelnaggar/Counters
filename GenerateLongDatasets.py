@@ -67,6 +67,100 @@ print(make_incomplete(seq_test))
 
 
 
+def make_invalid_excess_close(seqs):
+    new_seqs = []
+
+    for i in range(len(seqs)):
+        open_bracket_indices = [pos for pos, char in enumerate(seqs[i]) if char == '(']
+        num_open_brackets = len(open_bracket_indices)
+        num_changed_brackets = randint(1,num_open_brackets)
+        changed_bracket_indices = []
+        for j in range(num_changed_brackets):
+            idx = randint(0,num_open_brackets-1)
+            if open_bracket_indices[idx] not in changed_bracket_indices:
+                changed_bracket_indices.append(open_bracket_indices[idx])
+
+
+        seq = seqs[i]
+        print('seq before changing = ',seq)
+        print('change bracket indices = ',changed_bracket_indices)
+        for j in range(len(changed_bracket_indices)):
+            idx = changed_bracket_indices[j]
+            seq = seq[:idx]+')'+seq[idx+1:]
+        print('seq after changing = ',seq)
+        new_seqs.append(seq)
+        print(num_open_brackets)
+        print(num_changed_brackets)
+    return new_seqs
+
+print('***************************')
+seq_test = ['((()))', '()()(())', '(()()(()))']
+print(make_invalid_excess_close(seq_test))
+
+
+
+def get_timestep_depths(x):
+    max_depth=0
+    current_depth=0
+    timestep_depths = []
+    for i in range(len(x)):
+
+        if x[i] == '(':
+            current_depth += 1
+            timestep_depths.append(current_depth)
+            if current_depth > max_depth:
+                max_depth = current_depth
+        elif x[i] == ')':
+            current_depth -= 1
+            timestep_depths.append(current_depth)
+    return timestep_depths
+
+def make_invalid_wrong_order(seqs):
+    new_seqs = []
+
+    for i in range(len(seqs)):
+        seq = seqs[i]
+        timestep_depths = get_timestep_depths(seq)
+        zero_depth_indices = []
+        for j in range(len(timestep_depths)):
+            if timestep_depths[j]==0:
+                zero_depth_indices.append(j)
+        print('timestep depths = ',timestep_depths)
+        print('zero depth indices = ',zero_depth_indices)
+
+        num_zeros = len(zero_depth_indices)
+
+        num_changed_brackets = randint(1,num_zeros)
+        changed_indices = []
+        for j in range(num_changed_brackets):
+            idx = randint(0,num_zeros-1)
+            if zero_depth_indices[idx] not in changed_indices:
+                changed_indices.append(zero_depth_indices[idx])
+
+
+
+
+        # seq = seqs[i]
+        print('seq before changing = ',seq)
+        print('change bracket indices = ',changed_indices)
+        # print('change close bracket indices = ', changed_close_bracket_indices)
+        for j in range(len(changed_indices)):
+            idx = changed_indices[j]
+            if idx!=(len(seq)-1):
+                seq = seq[:idx+1]+')('+seq[idx+2:]
+            elif idx==len(seq)-1:
+                seq = ')'+seq[:len(seq)-1]
+
+        print('seq after changing = ',seq)
+        new_seqs.append(seq)
+        # print(num_open_brackets)
+        print(num_changed_brackets)
+    return new_seqs
+
+print('***************************')
+seq_test = ['((()))', '()()(())', '(()()(()))']
+print(make_invalid_wrong_order(seq_test))
+
 #
 # def make_incomplete(indices, seqs, labels):
 #     """
