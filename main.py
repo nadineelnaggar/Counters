@@ -95,7 +95,8 @@ counter_output_size = 1
 vocab = ['(', ')']
 
 
-
+with open(file_name,'w') as f:
+    f.write('')
 
 
 
