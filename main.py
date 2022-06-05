@@ -707,8 +707,9 @@ def main():
         np.random.seed(seed)
         with open(train_log, 'a') as f:
             f.write('random seed for run ' + str(i) + ' = ' + str(seed) + '\n')
-        model = select_model(counter_input_size=counter_input_size,counter_output_size=counter_output_size,output_size=output_size, initialisation=initialisation, output_activation=output_activation)
+        # model = select_model(counter_input_size=counter_input_size,counter_output_size=counter_output_size,output_size=output_size, initialisation=initialisation, output_activation=output_activation)
         # print(model.model_name)
+        model=select_model()
         model.to(device)
 
         # log_dir="logs"
