@@ -161,6 +161,85 @@ print('***************************')
 seq_test = ['((()))', '()()(())', '(()()(()))']
 print(make_invalid_wrong_order(seq_test))
 
+
+"""
+150 seqs total for dyck 1 classification task
+
+75 valid
+25 invalid excess
+25 invalid wrong order
+25 incomplete
+
+invalid excess, invalid wrong order, and incomplete will all be labelled as invalid
+"""
+
+dyck_seqs_20_valid = []
+dyck_seqs_20_invalid_wrong_order = []
+dyck_seqs_20_invalid_excess_close = []
+dyck_seqs_20_incomplete = []
+
+
+dyck_seqs_30_valid = []
+dyck_seqs_30_invalid_wrong_order = []
+dyck_seqs_30_invalid_excess_close = []
+dyck_seqs_30_incomplete = []
+
+
+
+dyck_seqs_40_valid = []
+dyck_seqs_40_invalid_wrong_order = []
+dyck_seqs_40_invalid_excess_close = []
+dyck_seqs_40_incomplete = []
+
+
+
+dyck_seqs_50_valid = []
+dyck_seqs_50_invalid_wrong_order = []
+dyck_seqs_50_invalid_excess_close = []
+dyck_seqs_50_incomplete = []
+
+###################################
+
+"""
+150 seqs total for the counting task
+
+75 incomplete
+25 valid
+25 invalid excess close
+25 invalid wrong order
+
+incomplete will be labelled final count positive
+valid, invalid excess close and invalid wrong order will be labelled final count zero or negative
+
+"""
+
+count_seqs_20_valid = []
+count_seqs_20_invalid_wrong_order = []
+count_seqs_20_invalid_excess_close = []
+count_seqs_20_incomplete = []
+
+
+count_seqs_30_valid = []
+count_seqs_30_invalid_wrong_order = []
+count_seqs_30_invalid_excess_close = []
+count_seqs_30_incomplete = []
+
+
+
+count_seqs_40_valid = []
+count_seqs_40_invalid_wrong_order = []
+count_seqs_40_invalid_excess_close = []
+count_seqs_40_incomplete = []
+
+
+
+count_seqs_50_valid = []
+count_seqs_50_invalid_wrong_order = []
+count_seqs_50_invalid_excess_close = []
+count_seqs_50_incomplete = []
+
+
+
 #
 # def make_incomplete(indices, seqs, labels):
 #     """
