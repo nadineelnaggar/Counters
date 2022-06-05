@@ -264,8 +264,7 @@ for i in range(len(dyck_seqs_20_invalid_wrong_order)):
     dyck1_seqs_20.append(dyck_seqs_20_invalid_wrong_order[i])
     dyck1_labels_20.append('invalid')
 
-with open('CounterDataset20Tokens.txt','w') as f:
-    f.write('')
+
 
 dyck_seqs_30_valid = seqs_30[:75]
 dyck_seqs_30_invalid_wrong_order = seqs_30[75:100]
@@ -375,12 +374,58 @@ count_seqs_20_invalid_wrong_order = seqs_20[25:50]
 count_seqs_20_invalid_excess_close = seqs_20[50:75]
 count_seqs_20_incomplete = seqs_20[75:150]
 
+count_seqs_20_invalid_excess_close = make_invalid_excess_close(count_seqs_20_invalid_excess_close)
+count_seqs_20_invalid_wrong_order = make_invalid_wrong_order(count_seqs_20_invalid_wrong_order)
+count_seqs_20_incomplete=make_incomplete(count_seqs_20_incomplete)
+
+count_seqs_20 = []
+count_labels_20 = []
+
+for i in range(len(count_seqs_20_valid)):
+    count_seqs_20.append(count_seqs_20_valid[i])
+    count_labels_20.append('ZeroNeg')
+
+for i in range(len(count_seqs_20_incomplete)):
+    count_seqs_20.append(count_seqs_20_incomplete[i])
+    count_labels_20.append('Pos')
+
+for i in range(len(count_seqs_20_invalid_wrong_order)):
+    count_seqs_20.append(count_seqs_20_invalid_wrong_order[i])
+    count_labels_20.append('ZeroNeg')
+
+for i in range(len(count_seqs_20_invalid_excess_close)):
+    count_seqs_20.append(count_seqs_20_invalid_excess_close[i])
+    count_labels_20.append('ZeroNeg')
+
+
 
 count_seqs_30_valid = seqs_30[:25]
 count_seqs_30_invalid_wrong_order = seqs_30[25:50]
 count_seqs_30_invalid_excess_close = seqs_30[50:75]
 count_seqs_30_incomplete = seqs_30[75:150]
 
+count_seqs_30_invalid_excess_close = make_invalid_excess_close(count_seqs_30_invalid_excess_close)
+count_seqs_30_invalid_wrong_order = make_invalid_wrong_order(count_seqs_30_invalid_wrong_order)
+count_seqs_30_incomplete = make_incomplete(count_seqs_30_incomplete)
+
+count_seqs_30 = []
+count_labels_30 = []
+
+for i in range(len(count_seqs_30_valid)):
+    count_seqs_30.append(count_seqs_30_valid[i])
+    count_labels_30.append('ZeroNeg')
+
+for i in range(len(count_seqs_30_incomplete)):
+    count_seqs_30.append(count_seqs_30_incomplete[i])
+    count_labels_30.append('Pos')
+
+for i in range(len(count_seqs_30_invalid_wrong_order)):
+    count_seqs_30.append(count_seqs_30_invalid_wrong_order[i])
+    count_labels_30.append('ZeroNeg')
+
+for i in range(len(count_seqs_30_invalid_excess_close)):
+    count_seqs_30.append(count_seqs_30_invalid_excess_close[i])
+    count_labels_30.append('ZeroNeg')
 
 
 count_seqs_40_valid = seqs_40[:25]
@@ -388,12 +433,59 @@ count_seqs_40_invalid_wrong_order = seqs_40[25:50]
 count_seqs_40_invalid_excess_close = seqs_40[50:75]
 count_seqs_40_incomplete = seqs_40[75:150]
 
+count_seqs_40_invalid_excess_close = make_invalid_excess_close(count_seqs_40_invalid_excess_close)
+count_seqs_40_invalid_wrong_order = make_invalid_wrong_order(count_seqs_40_invalid_wrong_order)
+count_seqs_40_incomplete = make_incomplete(count_seqs_40_incomplete)
+
+count_seqs_40 = []
+count_labels_40 = []
+
+for i in range(len(count_seqs_40_valid)):
+    count_seqs_40.append(count_seqs_40_valid[i])
+    count_labels_40.append('ZeroNeg')
+
+for i in range(len(count_seqs_40_incomplete)):
+    count_seqs_40.append(count_seqs_40_incomplete[i])
+    count_labels_40.append('Pos')
+
+for i in range(len(count_seqs_40_invalid_wrong_order)):
+    count_seqs_40.append(count_seqs_40_invalid_wrong_order[i])
+    count_labels_40.append('ZeroNeg')
+
+for i in range(len(count_seqs_40_invalid_excess_close)):
+    count_seqs_40.append(count_seqs_40_invalid_excess_close[i])
+    count_labels_40.append('ZeroNeg')
+
+
 
 
 count_seqs_50_valid = seqs_50[:25]
 count_seqs_50_invalid_wrong_order = seqs_50[25:50]
 count_seqs_50_invalid_excess_close = seqs_50[50:75]
 count_seqs_50_incomplete = seqs_50[75:150]
+
+count_seqs_50_invalid_excess_close = make_invalid_excess_close(count_seqs_50_invalid_excess_close)
+count_seqs_50_invalid_wrong_order = make_invalid_wrong_order(count_seqs_50_invalid_wrong_order)
+count_seqs_50_incomplete = make_incomplete(count_seqs_50_incomplete)
+
+count_seqs_50 = []
+count_labels_50 = []
+
+for i in range(len(count_seqs_50_valid)):
+    count_seqs_50.append(count_seqs_50_valid[i])
+    count_labels_50.append('ZeroNeg')
+
+for i in range(len(count_seqs_50_incomplete)):
+    count_seqs_50.append(count_seqs_50_incomplete[i])
+    count_labels_50.append('Pos')
+
+for i in range(len(count_seqs_50_invalid_wrong_order)):
+    count_seqs_50.append(count_seqs_50_invalid_wrong_order[i])
+    count_labels_50.append('ZeroNeg')
+
+for i in range(len(count_seqs_50_invalid_excess_close)):
+    count_seqs_50.append(count_seqs_50_invalid_excess_close[i])
+    count_labels_50.append('ZeroNeg')
 
 
 with open('CounterDataset20Tokens.txt','w') as f:
@@ -419,3 +511,59 @@ with open('Dyck1Dataset40Tokens.txt', 'w') as f:
 
 with open('Dyck1Dataset50Tokens.txt', 'w') as f:
     f.write('')
+
+
+with open('Dyck1Dataset20Tokens.txt','w') as f:
+    f.write('')
+
+
+with open('Dyck1Dataset30Tokens.txt','w') as f:
+    f.write('')
+
+with open('Dyck1Dataset40Tokens.txt','w') as f:
+    f.write('')
+
+with open('Dyck1Dataset50Tokens.txt','w') as f:
+    f.write('')
+
+count_seqs_20,count_labels_20 = shuffle(count_seqs_20,count_labels_20)
+count_seqs_30,count_labels_30 = shuffle(count_seqs_30,count_labels_30)
+count_seqs_40,count_labels_40 = shuffle(count_seqs_40,count_labels_40)
+count_seqs_50,count_labels_50 = shuffle(count_seqs_50,count_labels_50)
+
+with open('CounterDataset20Tokens.txt','a') as f:
+    for i in range(len(count_seqs_20)):
+        f.write(count_seqs_20[i] + ',' + count_labels_20[i] + '\n')
+
+with open('CounterDataset30Tokens.txt','a') as f:
+    for i in range(len(count_seqs_30)):
+        f.write(count_seqs_30[i] + ',' + count_labels_30[i] + '\n')
+
+with open('CounterDataset40Tokens.txt','a') as f:
+    for i in range(len(count_seqs_40)):
+        f.write(count_seqs_40[i] + ',' + count_labels_40[i] + '\n')
+
+with open('CounterDataset50Tokens.txt','a') as f:
+    for i in range(len(count_seqs_50)):
+        f.write(count_seqs_50[i] + ',' + count_labels_50[i] + '\n')
+
+dyck1_seqs_20, dyck1_labels_20 = shuffle(dyck1_seqs_20, dyck1_labels_20)
+dyck1_seqs_30, dyck1_labels_30 = shuffle(dyck1_seqs_30, dyck1_labels_30)
+dyck1_seqs_40, dyck1_labels_40 = shuffle(dyck1_seqs_40, dyck1_labels_40)
+dyck1_seqs_50, dyck1_labels_50 = shuffle(dyck1_seqs_50, dyck1_labels_50)
+
+with open('Dyck1Dataset20Tokens.txt', 'a') as f:
+    for i in range(len(dyck1_seqs_20)):
+        f.write(dyck1_seqs_20[i] + ',' + dyck1_labels_20[i] + '\n')
+
+with open('Dyck1Dataset30Tokens.txt', 'a') as f:
+    for i in range(len(dyck1_seqs_30)):
+        f.write(dyck1_seqs_30[i] + ',' + dyck1_labels_30[i] + '\n')
+
+with open('Dyck1Dataset40Tokens.txt', 'a') as f:
+    for i in range(len(dyck1_seqs_40)):
+        f.write(dyck1_seqs_40[i] + ',' + dyck1_labels_40[i] + '\n')
+
+with open('Dyck1Dataset50Tokens.txt', 'a') as f:
+    for i in range(len(dyck1_seqs_50)):
+        f.write(dyck1_seqs_50[i] + ',' + dyck1_labels_50[i] + '\n')
