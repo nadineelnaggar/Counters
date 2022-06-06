@@ -102,7 +102,7 @@ class NonZeroReLUCounter(nn.Module):
         # surplus_closing_brackets = self.closing_bracket_surplus_relu(surplus_closing_brackets)
 
         # output = torch.cat((surplus_closing_brackets.unsqueeze(dim=0), opening_minus_closing.unsqueeze(dim=0)))
-        output = torch.cat((opening_minus_closing.unsqueeze(dim=0), surplus_closing_brackets.unsqueeze(dim=0)))
+        output = torch.cat((opening_minus_closing, surplus_closing_brackets))
         output = self.out(output)
         # output = self.softmax(output)
         if self.output_activation=='Sigmoid':
