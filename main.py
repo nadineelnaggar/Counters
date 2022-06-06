@@ -223,15 +223,27 @@ def read_datasets():
 
     return x, y, x_20, y_20, x_30, y_30, x_40, y_40, x_50, y_50
 
+#
+# def encode_sentence(sentence):
+#     rep = torch.zeros(len(sentence),1,input_size)
+#     for index, char in enumerate(sentence):
+#         pos = vocab.index(char)
+#         if pos == 0:
+#             rep[index][0] = 1
+#         elif pos == 1:
+#             rep[index][0] = -1
+#     rep.requires_grad_(True)
+#     return rep
 
 def encode_sentence(sentence):
-    rep = torch.zeros(len(sentence),1,input_size)
+
+    rep = torch.zeros(len(sentence),1,n_letters)
+
+
+
     for index, char in enumerate(sentence):
         pos = vocab.index(char)
-        if pos == 0:
-            rep[index][0] = 1
-        elif pos == 1:
-            rep[index][0] = -1
+        rep[index][0][pos]=1
     rep.requires_grad_(True)
     return rep
 
@@ -677,14 +689,14 @@ def test(model, X, X_notencoded, y, y_notencoded, dataset):
 
 
 def main():
-    output_activation = 'Sigmoid'
-
-    if task == 'TernaryClassification':
-        num_classes = 3
-        output_activation = 'Softmax'
-    elif task == 'BinaryClassification' or task == 'NextTokenPrediction':
-        num_classes = 2
-        output_activation = 'Sigmoid'
+    # output_activation = 'Sigmoid'
+    #
+    # if task == 'TernaryClassification':
+    #     num_classes = 3
+    #     output_activation = 'Softmax'
+    # elif task == 'BinaryClassification' or task == 'NextTokenPrediction':
+    #     num_classes = 2
+    #     output_activation = 'Sigmoid'
 
     input_size = n_letters
 
