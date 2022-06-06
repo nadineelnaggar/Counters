@@ -45,15 +45,15 @@ class NonZeroReLUCounter(nn.Module):
         self.output_activation=output_activation
         self.ReLU = nn.ReLU()
         if initialisation=='correct':
-            self.open_bracket_filter.weight = nn.Parameter(torch.tensor([1,0],dtype=torch.float32))
-            self.close_bracket_filter.weight = nn.Parameter(torch.tensor([0,1],dtype=torch.float32))
-            self.open_bracket_counter.weight = nn.Parameter(torch.tensor([1,1],dtype=torch.float32))
-            self.close_bracket_counter.weight = nn.Parameter(torch.tensor([1,1],dtype=torch.float32))
-            self.open_minus_close.weight = nn.Parameter(torch.tensor([1,-1],dtype=torch.float32))
-            self.close_minus_open.weight = nn.Parameter(torch.tensor([-1,1],dtype=torch.float32))
+            self.open_bracket_filter.weight = nn.Parameter(torch.tensor([[1,0]],dtype=torch.float32))
+            self.close_bracket_filter.weight = nn.Parameter(torch.tensor([[0,1]],dtype=torch.float32))
+            self.open_bracket_counter.weight = nn.Parameter(torch.tensor([[1,1]],dtype=torch.float32))
+            self.close_bracket_counter.weight = nn.Parameter(torch.tensor([[1,1]],dtype=torch.float32))
+            self.open_minus_close.weight = nn.Parameter(torch.tensor([[1,-1]],dtype=torch.float32))
+            self.close_minus_open.weight = nn.Parameter(torch.tensor([[-1,1]],dtype=torch.float32))
             self.open_minus_close_copy.weight = nn.Parameter(torch.tensor([1],dtype=torch.float32))
-            self.surplus_close_count.weight = nn.Parameter(torch.tensor([1,1],dtype=torch.float32))
-            self.out.weight = nn.Parameter(torch.tensor([1,1],dtype=torch.float32))
+            self.surplus_close_count.weight = nn.Parameter(torch.tensor([[1,1]],dtype=torch.float32))
+            self.out.weight = nn.Parameter(torch.tensor([[1,1]],dtype=torch.float32))
 
 
 
