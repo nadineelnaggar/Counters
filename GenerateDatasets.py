@@ -280,7 +280,7 @@ class Count_Task_Bracket_Generator(object):
             for c in A:
                 if c == '(': bal += 1
                 else: bal -= 1
-                if bal < 0: return False
+                # if bal <= 0: return False
             return bal > 0
 
         positive = []
@@ -379,8 +379,8 @@ for i in range(len(count8_seqs)):
 
 count_upto8_seqs,count_upto8_labels = shuffle(count_upto8_seqs,count_upto8_labels)
 
-with open('CounterDataset2Tokens.txt','w') as f:
-    f.write('')
+# with open('CounterDataset2Tokens.txt','w') as f:
+#     f.write('')
 
 with open('CounterDataset4Tokens.txt','w') as f:
     f.write('')
@@ -389,18 +389,18 @@ with open('CounterDataset8Tokens.txt','w') as f:
     f.write('')
 
 
-with open('Dyck1Dataset2Tokens.txt','w') as f:
-    f.write('')
+# with open('Dyck1Dataset2Tokens.txt','w') as f:
+#     f.write('')
+#
+# with open('Dyck1Dataset4Tokens.txt','w') as f:
+#     f.write('')
+#
+# with open('Dyck1Dataset8Tokens.txt','w') as f:
+#     f.write('')
 
-with open('Dyck1Dataset4Tokens.txt','w') as f:
-    f.write('')
-
-with open('Dyck1Dataset8Tokens.txt','w') as f:
-    f.write('')
-
-with open('CounterDataset2Tokens.txt','a') as f:
-    for i in range(len(count2_seqs)):
-        f.write(count2_seqs[i]+','+count2_labels[i]+'\n')
+# with open('CounterDataset2Tokens.txt','a') as f:
+#     for i in range(len(count2_seqs)):
+#         f.write(count2_seqs[i]+','+count2_labels[i]+'\n')
 
 
 with open('CounterDataset4Tokens.txt','a') as f:
@@ -417,9 +417,9 @@ with open('CounterDataset8Tokens.txt','a') as f:
 dyck_seqs2_valid, dyck_seqs2_invalid = generateDataset(1,1)
 dyck_seqs_2, dyck_labels_2 = oversampleMinority(dyck_seqs2_valid,'valid',dyck_seqs2_invalid,'invalid')
 
-with open('Dyck1Dataset2Tokens.txt','a') as f:
-    for i in range(len(dyck_seqs_2)):
-        f.write(dyck_seqs_2[i]+','+dyck_labels_2[i]+'\n')
+# with open('Dyck1Dataset2Tokens.txt','a') as f:
+#     for i in range(len(dyck_seqs_2)):
+#         f.write(dyck_seqs_2[i]+','+dyck_labels_2[i]+'\n')
 
 
 dyck_seqs4_valid, dyck_seqs4_invalid = generateDataset(2,2)
@@ -437,9 +437,9 @@ for i in range(len(dyck_seqs_4)):
 
 dyck_upto4_seqs,dyck_upto4_labels = shuffle(dyck_upto4_seqs,dyck_upto4_labels)
 
-with open('Dyck1Dataset4Tokens.txt','a') as f:
-    for i in range(len(dyck_upto4_seqs)):
-        f.write(dyck_upto4_seqs[i]+','+dyck_upto4_labels[i]+'\n')
+# with open('Dyck1Dataset4Tokens.txt','a') as f:
+#     for i in range(len(dyck_upto4_seqs)):
+#         f.write(dyck_upto4_seqs[i]+','+dyck_upto4_labels[i]+'\n')
 
 
 dyck_upto8_seqs = []
@@ -459,9 +459,9 @@ for i in range(len(dyck_seqs_8)):
 
 dyck_upto8_seqs,dyck_upto8_labels = shuffle(dyck_upto8_seqs,dyck_upto8_labels)
 
-with open('Dyck1Dataset8Tokens.txt','a') as f:
-    for i in range(len(dyck_upto8_seqs)):
-        f.write(dyck_upto8_seqs[i]+','+dyck_upto8_labels[i]+'\n')
+# with open('Dyck1Dataset8Tokens.txt','a') as f:
+#     for i in range(len(dyck_upto8_seqs)):
+#         f.write(dyck_upto8_seqs[i]+','+dyck_upto8_labels[i]+'\n')
 
 
 
