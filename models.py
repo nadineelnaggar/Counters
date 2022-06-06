@@ -51,7 +51,7 @@ class NonZeroReLUCounter(nn.Module):
             self.close_bracket_counter.weight = nn.Parameter(torch.tensor([[1,1]],dtype=torch.float32))
             self.open_minus_close.weight = nn.Parameter(torch.tensor([[1,-1]],dtype=torch.float32))
             self.close_minus_open.weight = nn.Parameter(torch.tensor([[-1,1]],dtype=torch.float32))
-            self.open_minus_close_copy.weight = nn.Parameter(torch.tensor([1],dtype=torch.float32))
+            self.open_minus_close_copy.weight = nn.Parameter(torch.tensor([[1]],dtype=torch.float32))
             self.surplus_close_count.weight = nn.Parameter(torch.tensor([[1,1]],dtype=torch.float32))
             self.out.weight = nn.Parameter(torch.tensor([[1,1]],dtype=torch.float32))
 
