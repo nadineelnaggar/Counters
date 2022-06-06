@@ -9,6 +9,7 @@ import torch.optim as optim
 import pandas as pd
 import time
 import math
+from sklearn.metrics import confusion_matrix
 
 
 
@@ -98,7 +99,23 @@ vocab = ['(', ')']
 with open(file_name,'w') as f:
     f.write('')
 
+with open(train_log,'w') as f:
+    f.write('')
 
+with open(train_log_raw,'w') as f:
+    f.write('')
+
+with open(test_20_log,'w') as f:
+    f.write('')
+
+with open(test_30_log,'w') as f:
+    f.write('')
+
+with open(test_40_log,'w') as f:
+    f.write('')
+
+with open(test_50_log,'w') as f:
+    f.write('')
 
 num_classes = 2
 n_letters = 2
@@ -354,11 +371,11 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
 
             # hidden = model.init_hidden()
             if model.model_name=='LinearBracketCounter':
-                previous_state = torch.tensor(0,dtype=torch.float32)
+                previous_state = torch.tensor([0],dtype=torch.float32)
             elif model.model_name=='NonZeroReLUCounter':
-                opening_brackets = torch.tensor(0,dtype=torch.float32)
-                closing_brackets = torch.tensor(0,dtype=torch.float32)
-                excess_closing_brackets = torch.tensor(0,dtype=torch.float32)
+                opening_brackets = torch.tensor([0],dtype=torch.float32)
+                closing_brackets = torch.tensor([0],dtype=torch.float32)
+                excess_closing_brackets = torch.tensor([0],dtype=torch.float32)
 
 
             for j in range(len_seq):
@@ -430,6 +447,7 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
         accuracy = num_correct/len(X)*100
         # print('Accuracy for epoch ', epoch, '=', accuracy, '%')
         time_mins, time_secs = timeSince(start, epoch + 1 / num_epochs * 100)
+        losses.append(total_loss/len(X))
 
         with open(train_log, 'a') as f:
             f.write('Accuracy for epoch ' + str(epoch) + '=' + str(round(accuracy, 2)) + '%, avg train loss = ' +
@@ -491,6 +509,13 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
             # plt.savefig(checkpoint_lr_plot)
             # plt.close()
 
+    # plt.subplots()
+    # plt.plot(epochs,losses,label='Average Training Losses')
+    # plt.xlabel('Epoch')
+    # plt.ylabel('Loss')
+    # plt.savefig(plt_name+'')
+    # print('len epochs = ',len(epochs))
+    # print('len losses = ',len(losses))
 
 
     df1['epoch'] = epochs
@@ -568,11 +593,11 @@ def test(model, X, X_notencoded, y, y_notencoded, dataset):
 
         # hidden = model.init_hidden()
         if model.model_name == 'LinearBracketCounter':
-            previous_state = torch.tensor(0, dtype=torch.float32)
+            previous_state = torch.tensor([0], dtype=torch.float32)
         elif model.model_name == 'NonZeroReLUCounter':
-            opening_brackets = torch.tensor(0, dtype=torch.float32)
-            closing_brackets = torch.tensor(0, dtype=torch.float32)
-            excess_closing_brackets = torch.tensor(0, dtype=torch.float32)
+            opening_brackets = torch.tensor([0], dtype=torch.float32)
+            closing_brackets = torch.tensor([0], dtype=torch.float32)
+            excess_closing_brackets = torch.tensor([0], dtype=torch.float32)
 
         for j in range(len_seq):
             if model.model_name == 'LinearBracketCounter':
@@ -648,7 +673,7 @@ def test(model, X, X_notencoded, y, y_notencoded, dataset):
 
     # print(accuracies)
     # print(accuracy)
-    return accuracy,
+    return accuracy
 
 
 
@@ -736,7 +761,7 @@ def main():
         # long_test_accuracy = test_model(model, long_loader, 'long')
         # long_test_accuracies.append(long_test_accuracy)
 
-        df.plot(x='epoch', y=['Average training losses', 'Average validation losses', 'Average long validation losses'])
+        df.plot(x='epoch', y=['Average training losses'])
         plt.savefig(plt_name + '_losses_run' + str(i) + '.png')
         df.plot(x='epoch', y=['Training accuracies'])
         plt.savefig(plt_name + '_accuracies_run' + str(i) + '.png')
