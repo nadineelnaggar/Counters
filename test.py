@@ -146,3 +146,13 @@ for i in range(len(count8_seqs)):
 
     print(count8_seqs[i], count8_labels[i], (count8_seqs[i].count('(') - count8_seqs[i].count(')')))
 
+
+
+
+seqsCount2TokensPos, seqsCount2TokensZeroNeg = generateCountDataset(1,1)
+
+count2_seqs, count2_labels = oversampleMinority(seqsCount2TokensPos,'Pos', seqsCount2TokensZeroNeg,'ZeroNeg')
+
+for i in range(len(count2_seqs)):
+
+    print(count2_seqs[i], count2_labels[i], (count2_seqs[i].count('(') - count2_seqs[i].count(')')))
