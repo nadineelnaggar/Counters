@@ -595,9 +595,9 @@ def test(model, X, X_notencoded, y, y_notencoded, dataset):
         if model.model_name == 'LinearBracketCounter':
             previous_state = torch.tensor([0], dtype=torch.float32)
         elif model.model_name == 'NonZeroReLUCounter':
-            opening_brackets = torch.tensor([0], dtype=torch.float32)
-            closing_brackets = torch.tensor([0], dtype=torch.float32)
-            excess_closing_brackets = torch.tensor([0], dtype=torch.float32)
+            opening_brackets = torch.tensor(0, dtype=torch.float32)
+            closing_brackets = torch.tensor(0, dtype=torch.float32)
+            excess_closing_brackets = torch.tensor(0, dtype=torch.float32)
 
         for j in range(len_seq):
             if model.model_name == 'LinearBracketCounter':
