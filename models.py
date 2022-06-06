@@ -92,7 +92,7 @@ class NonZeroReLUCounter(nn.Module):
         opening_minus_closing=self.ReLU(opening_minus_closing)
         # opening_minus_closing = self.opening_minus_closing_relu(opening_minus_closing)
 
-        opening_minus_closing = self.open_minus_close_copy(opening_minus_closing.unsqueeze(dim=0))
+        opening_minus_closing = self.open_minus_close_copy(opening_minus_closing)
         opening_minus_closing=self.ReLU(opening_minus_closing)
         # opening_minus_closing = self.opening_minus_closing_copy_relu(opening_minus_closing)
         surplus_closing_brackets = torch.cat(
