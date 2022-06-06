@@ -60,7 +60,7 @@ class NonZeroReLUCounter(nn.Module):
 
 
     def forward(self,x, opening_brackets, closing_brackets, excess_closing_brackets):
-        closing = self.close_bracket_filter(x.unsqueeze(dim=0))
+        closing = self.close_bracket_filter(x)
         closing = self.ReLU(closing)
         # print(closing)
         # closing = self.closing_filter_relu(closing)
