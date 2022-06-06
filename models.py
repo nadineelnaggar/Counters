@@ -84,7 +84,7 @@ class NonZeroReLUCounter(nn.Module):
         # closing_minus_opening = torch.cat((closing.unsqueeze(dim=0), opening.unsqueeze(dim=0)))
         closing_minus_opening = torch.cat((opening, closing))
         # opening_minus_closing = torch.cat((closing.unsqueeze(dim=0), opening.unsqueeze(dim=0)))
-        opening_minus_closing = torch.cat((opening.unsqueeze(dim=0), closing.unsqueeze(dim=0)))
+        opening_minus_closing = torch.cat((opening, closing))
         closing_minus_opening = self.close_minus_open(closing_minus_opening)
         closing_minus_opening = self.ReLU(closing_minus_opening)
         # closing_minus_opening = self.closing_minus_opening_relu(closing_minus_opening)
