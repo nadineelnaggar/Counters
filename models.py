@@ -71,12 +71,12 @@ class NonZeroReLUCounter(nn.Module):
         # closing = self.closing_bracket_counter_relu(closing)
         closing_brackets = closing
 
-        opening = self.open_bracket_filter(x)
+        opening = self.open_bracket_filter(x.unsqueeze(dim=0))
         opening = self.ReLU(opening)
         # opening = self.opening_filter_relu(opening)
 
-        opening = torch.cat((opening.unsqueeze(dim=0), opening_brackets.unsqueeze(dim=0)))
-        opening = self.open_bracket_counter(opening)
+        opening = torch.cat((opening, opening_brackets.unsqueeze(dim=0)))
+        opening = self.open_bracket_counter(opening.squeeze())
         opening=self.ReLU(opening)
         # opening = self.open_bracket_counter_relu(opening)
         opening_brackets = opening
