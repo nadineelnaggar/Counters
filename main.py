@@ -603,7 +603,7 @@ def test(model, X, X_notencoded, y, y_notencoded, dataset):
             if model.model_name == 'LinearBracketCounter':
                 out, previous_state = model(X[i][j].squeeze().to(device), previous_state)
             elif model.model_name == 'NonZeroReLUCounter':
-                out, opening_brackets, closing_brackets, excess_closing_brackets = model(X[i][j].to(device), opening_brackets, closing_brackets, excess_closing_brackets)
+                out, opening_brackets, closing_brackets, excess_closing_brackets = model(X[i][j].squeeze().to(device), opening_brackets, closing_brackets, excess_closing_brackets)
 
             # output_seq[j]=out
 
