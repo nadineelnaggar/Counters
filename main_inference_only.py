@@ -823,10 +823,10 @@ def main():
     #
     # writer.save()
 
-    max_train_accuracy = max(train_accuracies)
-    min_train_accuracy = min(train_accuracies)
-    avg_train_accuracy = sum(train_accuracies) / len(train_accuracies)
-    std_train_accuracy = np.std(train_accuracies)
+    # max_train_accuracy = max(train_accuracies)
+    # min_train_accuracy = min(train_accuracies)
+    # avg_train_accuracy = sum(train_accuracies) / len(train_accuracies)
+    # std_train_accuracy = np.std(train_accuracies)
 
 
     max_test_10_accuracy = max(test_10_accuracies)
@@ -840,20 +840,20 @@ def main():
     # avg_test_20_accuracy = sum(test_20_accuracies) / len(test_20_accuracies)
     # std_test_20_accuracy = np.std(test_20_accuracies)
 
-    max_test_30_accuracy = max(test_30_accuracies)
-    min_test_30_accuracy = min(test_30_accuracies)
-    avg_test_30_accuracy = sum(test_30_accuracies) / len(test_30_accuracies)
-    std_test_30_accuracy = np.std(test_30_accuracies)
+    # max_test_30_accuracy = max(test_30_accuracies)
+    # min_test_30_accuracy = min(test_30_accuracies)
+    # avg_test_30_accuracy = sum(test_30_accuracies) / len(test_30_accuracies)
+    # std_test_30_accuracy = np.std(test_30_accuracies)
 
-    max_test_40_accuracy = max(test_40_accuracies)
-    min_test_40_accuracy = min(test_40_accuracies)
-    avg_test_40_accuracy = sum(test_40_accuracies) / len(test_40_accuracies)
-    std_test_40_accuracy = np.std(test_40_accuracies)
+    # max_test_40_accuracy = max(test_40_accuracies)
+    # min_test_40_accuracy = min(test_40_accuracies)
+    # avg_test_40_accuracy = sum(test_40_accuracies) / len(test_40_accuracies)
+    # std_test_40_accuracy = np.std(test_40_accuracies)
 
-    max_test_50_accuracy = max(test_50_accuracies)
-    min_test_50_accuracy = min(test_50_accuracies)
-    avg_test_50_accuracy = sum(test_50_accuracies) / len(test_50_accuracies)
-    std_test_50_accuracy = np.std(test_50_accuracies)
+    # max_test_50_accuracy = max(test_50_accuracies)
+    # min_test_50_accuracy = min(test_50_accuracies)
+    # avg_test_50_accuracy = sum(test_50_accuracies) / len(test_50_accuracies)
+    # std_test_50_accuracy = np.std(test_50_accuracies)
 
 
 
