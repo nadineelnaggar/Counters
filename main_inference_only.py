@@ -791,7 +791,7 @@ def main():
         # train_dataframes.append(df)
         # test_accuracy = test_model(model, test_loader, 'short')
 
-        test_10_accuracy = test(model, X_20, X_20_notencoded, y_20, y_20_notencoded,'test_10')
+        test_10_accuracy = test(model, X_10, X_10_notencoded, y_10, y_10_notencoded,'test_10')
         test_10_accuracies.append(test_10_accuracy)
 
         # test_20_accuracy = test(model, X_20,X_20_notencoded,y_20,y_20_notencoded, 'test_20')
