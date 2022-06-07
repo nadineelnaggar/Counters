@@ -771,7 +771,7 @@ def main():
         # model = select_model(counter_input_size=counter_input_size,counter_output_size=counter_output_size,output_size=output_size, initialisation=initialisation, output_activation=output_activation)
         # print(model.model_name)
         model=select_model()
-        mdl = modelname + 'run' + str() + '.pth'
+        mdl = modelname + 'run' + str(i) + '.pth'
 
         model.load_state_dict(torch.load(mdl))
 
