@@ -97,5 +97,10 @@ for run in range(num_runs):
 
     model.to(device)
     # print(model.parameters)
+    print('*********************************')
     print(model.counter.weight)
     print(model.out.weight)
+    print('if input = (, sum = ',1*model.counter.weight[0][0])
+    print('if input = (, sum = ',1*model.counter.weight[0][1])
+    print('recurrent weight = ',model.counter.weight[0][2])
+    print('ratio of a and b = ',model.counter.weight[0][0]/model.counter.weight[0][1])
