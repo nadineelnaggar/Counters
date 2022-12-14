@@ -246,6 +246,37 @@ def read_datasets():
                 label = line[1].strip()
                 x_50.append(sentence)
                 y_50.append(label)
+    elif model_name == 'TernaryLinearBracketCounter':
+        with open('CounterDataset20TokensTernary.txt', 'r') as f:
+            for line in f:
+                line = line.split(",")
+                sentence = line[0].strip()
+                label = line[1].strip()
+                x_20.append(sentence)
+                y_20.append(label)
+        with open('CounterDataset30TokensTernary.txt', 'r') as f:
+            for line in f:
+                line = line.split(",")
+                sentence = line[0].strip()
+                label = line[1].strip()
+                x_30.append(sentence)
+                y_30.append(label)
+
+        with open('CounterDataset40TokensTernary.txt', 'r') as f:
+            for line in f:
+                line = line.split(",")
+                sentence = line[0].strip()
+                label = line[1].strip()
+                x_40.append(sentence)
+                y_40.append(label)
+
+        with open('CounterDataset50TokensTernary.txt', 'r') as f:
+            for line in f:
+                line = line.split(",")
+                sentence = line[0].strip()
+                label = line[1].strip()
+                x_50.append(sentence)
+                y_50.append(label)
 
 
     return x, y, x_20, y_20, x_30, y_30, x_40, y_40, x_50, y_50
