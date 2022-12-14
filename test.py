@@ -156,3 +156,20 @@ count2_seqs, count2_labels = oversampleMinority(seqsCount2TokensPos,'Pos', seqsC
 for i in range(len(count2_seqs)):
 
     print(count2_seqs[i], count2_labels[i], (count2_seqs[i].count('(') - count2_seqs[i].count(')')))
+
+
+
+labels=['Neg', 'Zero', 'Pos']
+task='TernaryBracketCounting'
+# task=''
+def encode_labels(label):
+    if task=='TernaryBracketCounting':
+        out = torch.zeros((1,len(labels)))
+        out[0][labels.index(label)]=1
+        return out
+    else:
+        return torch.tensor([labels.index(label)], dtype=torch.float32)
+
+print(encode_labels('Neg'))
+print(encode_labels('Zero'))
+print(encode_labels('Pos'))

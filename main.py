@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sklearn
 import argparse
-from models import NonZeroReLUCounter,LinearBracketCounter
+from models import NonZeroReLUCounter,LinearBracketCounter, TernaryLinearBracketCounter, TernaryRegressionLinearBracketCounter
 import torch.optim as optim
 import pandas as pd
 import time
@@ -60,10 +60,16 @@ elif task=='TernaryBracketCounting':
     labels=['Neg', 'Zero', 'Pos']
 
 def classFromOutput(output):
-    if output.item() > 0.5:
-        category_i = 1
-    else:
-        category_i = 0
+
+    if task=='Dyck1Classification' or task=='BracketCounting':
+        if output.item() > 0.5:
+            category_i = 1
+        else:
+            category_i = 0
+    elif task == 'TernaryBracketCounting':
+        top_n, top_i = output.topk(1)
+        category_i = top_i[0].item()
+        # return labels[category_i], category_i
     return labels[category_i], category_i
 
 
@@ -98,6 +104,9 @@ hidden_size = 2
 counter_input_size = 3
 counter_output_size = 1
 vocab = ['(', ')']
+if task=='TernaryBracketCounting':
+        output_size=len(labels)
+
 
 
 with open(file_name,'w') as f:
@@ -273,7 +282,12 @@ def encode_sentence(sentence):
 #         return torch.tensor(1,dtype=torch.float32)
 
 def encode_labels(label):
-    return torch.tensor([labels.index(label)], dtype=torch.float32)
+    if task=='TernaryBracketCounting':
+        out = torch.zeros((1,len(labels)))
+        out[0][labels.index(label)]=1
+        return out
+    else:
+        return torch.tensor([labels.index(label)], dtype=torch.float32)
 
 def encode_dataset(sentences, labels):
     encoded_sentences = []
@@ -313,6 +327,10 @@ def select_model():
         model = NonZeroReLUCounter(counter_input_size=counter_input_size,counter_output_size=counter_output_size,output_size=output_size, initialisation=initialisation, output_activation=output_activation)
     elif task=='BracketCounting':
         model = LinearBracketCounter(counter_input_size=counter_input_size,counter_output_size=counter_output_size,output_size=output_size, initialisation=initialisation, output_activation=output_activation)
+    elif task == 'TernaryBracketCounting':
+        model = TernaryLinearBracketCounter(counter_input_size=counter_input_size, counter_output_size=counter_output_size,
+                                     output_size=output_size, initialisation=initialisation,
+                                     output_activation=output_activation)
 
     return model.to(device)
 
