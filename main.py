@@ -557,9 +557,9 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
         time_mins, time_secs = timeSince(start, epoch + 1 / num_epochs * 100)
         losses.append(total_loss/len(X))
 
-        # train_val_acc, train_val_loss = validate(model, X, X_notencoded, y, y_notencoded, criterion)
-        # train_val_accuracies.append(train_val_acc)
-        # train_val_losses.append(train_val_loss)
+        train_val_acc, train_val_loss = validate(model, X, X_notencoded, y, y_notencoded, criterion)
+        train_val_accuracies.append(train_val_acc)
+        train_val_losses.append(train_val_loss)
 
         with open(train_log, 'a') as f:
             f.write('Accuracy for epoch ' + str(epoch) + '=' + str(round(accuracy, 2)) + '%, avg train loss = ' +
@@ -636,8 +636,8 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
     df1['epoch'] = epochs
     df1['Training accuracies'] = accuracies
     df1['Average training losses'] = losses
-    # df1['Average training accuracies (after training)'] = train_val_accuracies
-    # df1['Average training losses (after training)'] = train_val_losses
+    df1['Average training accuracies (after training)'] = train_val_accuracies
+    df1['Average training losses (after training)'] = train_val_losses
     # df1['Average validation losses'] = validation_losses
     # df1['Validation accuracies'] = validation_accuracies
     # df1['Average long validation losses'] = long_validation_losses
