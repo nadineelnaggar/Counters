@@ -333,6 +333,7 @@ def timeSince(since, percent):
 
 
 def train(model, X, X_notencoded, y, y_notencoded, run=0):
+
     start = time.time()
 
     # criterion = nn.MSELoss()
@@ -357,6 +358,8 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
     num_samples = len(X)
     confusion_matrices = []
 
+    train_val_accuracies = []
+    train_val_losses = []
 
 
     print(model)
@@ -369,6 +372,7 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
 
 
     for epoch in range(num_epochs):
+        model.train()
         num_correct = 0
         confusion = torch.zeros(num_classes, num_classes)
         predicted_classes = []
@@ -498,6 +502,11 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
         correct_arr.append(epoch_correct_guesses)
         conf_matrix = sklearn.metrics.confusion_matrix(expected_classes, predicted_classes)
         confusion_matrices.append(conf_matrix)
+
+        train_val_acc, train_val_loss = validate(model, X, X_notencoded, y, y_notencoded, criterion)
+        train_val_accuracies.append(train_val_acc)
+        train_val_losses.append(train_val_loss)
+
         if epoch == num_epochs - 1:
             # print('\n////////////////////////////////////////////////////////////////////////////////////////\n')
             print('num_correct = ',num_correct)
@@ -554,6 +563,8 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
     df1['epoch'] = epochs
     df1['Training accuracies'] = accuracies
     df1['Average training losses'] = losses
+    df1['Average training accuracies (after training)'] = train_val_accuracies
+    df1['Average training losses (after training)'] = train_val_losses
     # df1['Average validation losses'] = validation_losses
     # df1['Validation accuracies'] = validation_accuracies
     # df1['Average long validation losses'] = long_validation_losses
@@ -579,6 +590,136 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
         # print(accuracies)
         # print(accuracy)
     return accuracy, df1
+
+def validate(model, X, X_notencoded, y, y_notencoded, criterion):
+    model.eval()
+
+    # if dataset=='test_20':
+    #     log_file = test_20_log
+    # elif dataset=='test_30':
+    #     log_file=test_30_log
+    # elif dataset=='test_40':
+    #     log_file = test_40_log
+    # elif dataset=='test_50':
+    #     log_file=test_50_log
+
+
+    num_samples = len(X)
+
+
+    print(model)
+
+    num_correct = 0
+    confusion = torch.zeros(num_classes, num_classes)
+    predicted_classes = []
+    expected_classes = []
+    total_loss = 0
+
+
+    for i in range(len(X)):
+        # model.zero_grad()
+        # input_seq = Dyck.lineToTensor(X[i])
+        # target_seq = Dyck.lineToTensorSigmoid(y[i])
+        input_seq = X[i]
+        target_seq = y[i]
+        len_seq = len(input_seq)
+
+        # output_seq = torch.zeros(target_seq.shape)
+
+        input_seq.to(device)
+        target_seq.to(device)
+        # output_seq.to(device)
+
+        input_tensor = X[i]
+        class_tensor = y[i]
+        input_sentence = X_notencoded[i]
+        class_category = y_notencoded[i]
+
+        # hidden = model.init_hidden()
+        if model.model_name == 'LinearBracketCounter':
+            previous_state = torch.tensor([0], dtype=torch.float32)
+        elif model.model_name == 'NonZeroReLUCounter':
+            opening_brackets = torch.tensor([0], dtype=torch.float32)
+            closing_brackets = torch.tensor([0], dtype=torch.float32)
+            excess_closing_brackets = torch.tensor([0], dtype=torch.float32)
+
+        for j in range(len_seq):
+            if model.model_name == 'LinearBracketCounter':
+                out, previous_state = model(X[i][j].squeeze().to(device), previous_state)
+            elif model.model_name == 'NonZeroReLUCounter':
+                out, opening_brackets, closing_brackets, excess_closing_brackets = model(X[i][j].squeeze().to(device), opening_brackets, closing_brackets, excess_closing_brackets)
+
+            # output_seq[j]=out
+
+
+        # with open(log_file, 'a') as f:
+        #     f.write('////////////////////////////////////////\n')
+        #     f.write('input sentence = ' + str(X[i]) + '\n')
+        #     f.write('encoded sentence = ' + str(input_seq) + '\n')
+
+
+
+
+        # with open(log_file, 'a') as f:
+        #     f.write('actual output in train function = ' + str(out) + '\n')
+
+        out_np = np.int_(out.detach().cpu().numpy() > 0.5)
+        target_np = np.int_(target_seq.detach().cpu().numpy())
+
+        total_loss+=criterion(out, y[i]).item()
+
+        guess, guess_i = classFromOutput(out)
+        class_i = labels.index(class_category)
+        confusion[class_i][guess_i] += 1
+        # current_loss += loss
+        expected_classes.append(class_i)
+        predicted_classes.append(guess_i)
+        if guess == class_category:
+            num_correct += 1
+
+        #     with open(log_file, 'a') as f:
+        #         f.write('CORRECT' + '\n')
+        # else:
+        #
+        #     with open(log_file, 'a') as f:
+        #         f.write('INCORRECT' + '\n')
+
+
+        # with open(log_file, 'a') as f:
+        #     f.write('rounded output function = ' + str(out_np) + '\n')
+        #     f.write('target = ' + str(target_np) + '\n')
+
+            #
+            #
+            # if np.all(np.equal(out_np, target_np)) and (out_np.flatten() == target_np.flatten()).all():
+            #     num_correct += 1
+            #     # correct_arr.append(X[i])
+            #     epoch_correct_guesses.append(X[i])
+            #     if print_flag == True:
+            #         with open(train_log, 'a') as f:
+            #             f.write('CORRECT' + '\n')
+            # else:
+            #     epoch_incorrect_guesses.append(X[i])
+            #     if print_flag == True:
+            #         with open(train_log, 'a') as f:
+            #             f.write('INCORRECT' + '\n')
+
+        accuracy = num_correct / len(X) * 100
+        # print('Accuracy for epoch ', epoch, '=', accuracy, '%')
+
+
+
+
+        conf_matrix = sklearn.metrics.confusion_matrix(expected_classes, predicted_classes)
+
+
+
+
+
+    # print(accuracies)
+    # print(accuracy)
+    return accuracy, total_loss/len(X)
+
 
 
 def test(model, X, X_notencoded, y, y_notencoded, dataset):
