@@ -96,4 +96,6 @@ for run in range(num_runs):
     model.load_state_dict(torch.load(mdl))
 
     model.to(device)
-    print(model.Parameter['weight'])
+    print(model.parameters)
+    print(model.counter.weight)
+    print(model.out.weight)
