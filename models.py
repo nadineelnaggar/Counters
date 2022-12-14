@@ -26,6 +26,54 @@ class LinearBracketCounter(nn.Module):
             x = torch.clamp(x,min=0,max=1)
         return x, previous_count
 
+class TernaryLinearBracketCounter(nn.Module):
+    def __init__(self, counter_input_size, counter_output_size, output_size, initialisation='random',output_activation='Softmax'):
+        super(TernaryLinearBracketCounter, self).__init__()
+        self.model_name='TernaryLinearBracketCounter'
+        self.counter = nn.Linear(counter_input_size,counter_output_size, bias=False)
+        self.out = nn.Linear(counter_output_size,output_size, bias=False)
+        self.output_activation = output_activation
+        if initialisation=='correct':
+            self.counter.weight =  nn.Parameter(torch.tensor([[1, -1, 1]], dtype=torch.float32))
+            self.out.weight = nn.Parameter(torch.tensor([[1]],dtype=torch.float32))
+        # self.sigmoid = nn.Sigmoid()
+        self.softmax = nn.Softmax(dim=1)
+
+    def forward(self, x, previous_count):
+        combined = torch.cat((x, previous_count))
+        x = self.counter(combined)
+        previous_count = x
+        x = self.out(x)
+        if self.output_activation=='Softmax':
+            x = self.softmax(x)
+        elif self.output_activation=='Clipping':
+            x = torch.clamp(x,min=0,max=1)
+        return x, previous_count
+
+class TernaryRegressionLinearBracketCounter(nn.Module):
+    def __init__(self, counter_input_size, counter_output_size, output_size, initialisation='random',output_activation='Softmax'):
+        super(TernaryRegressionLinearBracketCounter, self).__init__()
+        self.model_name='TernaryRegressionLinearBracketCounter'
+        self.counter = nn.Linear(counter_input_size,counter_output_size, bias=False)
+        # self.out = nn.Linear(counter_output_size,output_size, bias=False)
+        self.output_activation = output_activation
+        if initialisation=='correct':
+            self.counter.weight =  nn.Parameter(torch.tensor([[1, -1, 1]], dtype=torch.float32))
+            # self.out.weight = nn.Parameter(torch.tensor([[1]],dtype=torch.float32))
+        # self.sigmoid = nn.Sigmoid()
+        # self.Softmax = nn.Softmax()
+
+    def forward(self, x, previous_count):
+        combined = torch.cat((x, previous_count))
+        x = self.counter(combined)
+        previous_count = x
+        # x = self.out(x)
+        # if self.output_activation=='Softmax':
+        #     x = self.softmax(x)
+        # elif self.output_activation=='Clipping':
+        #     x = torch.clamp(x,min=0,max=1)
+        return x, previous_count
+
 
 class NonZeroReLUCounter(nn.Module):
     def __init__(self,counter_input_size, counter_output_size, output_size, initialisation='random',output_activation='Sigmoid'):
