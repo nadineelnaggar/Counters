@@ -37,7 +37,7 @@ class TernaryLinearBracketCounter(nn.Module):
             self.counter.weight =  nn.Parameter(torch.tensor([[1, -1, 1]], dtype=torch.float32))
             self.out.weight = nn.Parameter(torch.tensor([[1]],dtype=torch.float32))
         # self.sigmoid = nn.Sigmoid()
-        self.softmax = nn.Softmax(dim=1)
+        self.softmax = nn.Softmax(dim=0)
 
     def forward(self, x, previous_count):
         combined = torch.cat((x, previous_count))
