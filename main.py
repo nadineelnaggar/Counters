@@ -485,6 +485,8 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
                     out, previous_state = model(X[i][j].squeeze().to(device), previous_state)
                 elif model.model_name=='NonZeroReLUCounter':
                     out, opening_brackets,closing_brackets,excess_closing_brackets = model(X[i][j].squeeze().to(device),opening_brackets,closing_brackets,excess_closing_brackets)
+                elif model.model_name=='TernaryLinearBracketCounter':
+                    out, previous_state = model(X[i][j].squeeze().to(device), previous_state)
 
                 # output_seq[j]=out
 
@@ -715,6 +717,8 @@ def validate(model, X, X_notencoded, y, y_notencoded, criterion):
                 out, previous_state = model(X[i][j].squeeze().to(device), previous_state)
             elif model.model_name == 'NonZeroReLUCounter':
                 out, opening_brackets, closing_brackets, excess_closing_brackets = model(X[i][j].squeeze().to(device), opening_brackets, closing_brackets, excess_closing_brackets)
+            elif model.model_name == 'TernaryLinearBracketCounter':
+                out, previous_state = model(X[i][j].squeeze().to(device), previous_state)
 
             # output_seq[j]=out
 
@@ -845,6 +849,8 @@ def test(model, X, X_notencoded, y, y_notencoded, dataset):
                 out, previous_state = model(X[i][j].squeeze().to(device), previous_state)
             elif model.model_name == 'NonZeroReLUCounter':
                 out, opening_brackets, closing_brackets, excess_closing_brackets = model(X[i][j].squeeze().to(device), opening_brackets, closing_brackets, excess_closing_brackets)
+            elif model.model_name == 'TernaryLinearBracketCounter':
+                out, previous_state = model(X[i][j].squeeze().to(device), previous_state)
 
             # output_seq[j]=out
 
