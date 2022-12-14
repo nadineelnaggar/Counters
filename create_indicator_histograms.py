@@ -86,6 +86,9 @@ def select_model():
 
     return model.to(device)
 
+a_b_ratio = []
+recurrent_weights = []
+
 for run in range(num_runs):
     # for epoch in range(num_epochs):
         # if epoch%checkpoint_step==0:
@@ -104,3 +107,12 @@ for run in range(num_runs):
     print('if input = (, sum = ',model.counter.weight[0][1].item())
     print('recurrent weight = ',model.counter.weight[0][2].item())
     print('ratio of a and b = ',model.counter.weight[0][0].item()/model.counter.weight[0][1].item())
+    a_b_ratio.append(model.counter.weight[0][0].item()/model.counter.weight[0][1].item())
+    recurrent_weights.append(model.counter.weight[0][2].item())
+
+
+plt.subplots()
+plt.hist(a_b_ratio)
+plt.show()
+plt.hist(recurrent_weights)
+plt.show()
