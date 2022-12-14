@@ -143,6 +143,10 @@ def read_datasets():
             read_file = 'CounterDataset2Tokens.txt'
         elif model_name=='LinearBracketCounter' and oversampling=='NonOversampledDataset':
             read_file = 'CounterDataset2TokensNoOversampling.txt'
+        elif model_name=='TernaryLinearBracketCounter' and oversampling=='NonOversampledDataset':
+            read_file = 'CounterDataset2TokensTernaryNoOversampling.txt'
+        elif model_name=='TernaryLinearBracketCounter' and oversampling=='OversampledDataset':
+            read_file = 'CounterDataset2TokensTernary.txt'
     elif train_seq_length==4:
         if model_name=='NonZeroReLUCounter':
             read_file = 'Dyck1Dataset4Tokens.txt'
@@ -150,6 +154,10 @@ def read_datasets():
             read_file = 'CounterDataset4Tokens.txt'
         elif model_name=='LinearBracketCounter' and oversampling=='NonOversampledDataset':
             read_file = 'CounterDataset4TokensNoOversampling.txt'
+        elif model_name=='TernaryLinearBracketCounter' and oversampling=='NonOversampledDataset':
+            read_file = 'CounterDataset4TokensTernaryNoOversampling.txt'
+        elif model_name=='TernaryLinearBracketCounter' and oversampling=='OversampledDataset':
+            read_file = 'CounterDataset4TokensTernary.txt'
     elif train_seq_length==8:
         if model_name=='NonZeroReLUCounter':
             read_file = 'Dyck1Dataset8Tokens.txt'
@@ -157,6 +165,10 @@ def read_datasets():
             read_file = 'CounterDataset8Tokens.txt'
         elif model_name=='LinearBracketCounter' and oversampling=='NonOversampledDataset':
             read_file = 'CounterDataset8TokensNoOversampling.txt'
+        elif model_name=='TernaryLinearBracketCounter' and oversampling=='NonOversampledDataset':
+            read_file = 'CounterDataset8TokensTernaryNoOversampling.txt'
+        elif model_name=='TernaryLinearBracketCounter' and oversampling=='OversampledDataset':
+            read_file = 'CounterDataset8TokensTernary.txt'
     elif train_seq_length == 16:
         # if model_name == 'NonZeroReLUCounter':
         #     read_file = 'Dyck1Dataset8Tokens.txt'
@@ -165,6 +177,10 @@ def read_datasets():
             read_file = 'CounterDataset16Tokens.txt'
         elif model_name == 'LinearBracketCounter' and oversampling == 'NonOversampledDataset':
             read_file = 'CounterDataset16TokensNoOversampling.txt'
+        elif model_name=='TernaryLinearBracketCounter' and oversampling=='NonOversampledDataset':
+            read_file = 'CounterDataset16TokensTernaryNoOversampling.txt'
+        elif model_name=='TernaryLinearBracketCounter' and oversampling=='OversampledDataset':
+            read_file = 'CounterDataset16TokensTernary.txt'
 
     with open(read_file, 'r') as f:
         for line in f:
