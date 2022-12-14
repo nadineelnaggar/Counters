@@ -113,9 +113,9 @@ for run in range(num_runs):
 
 plt.subplots()
 plt.hist(a_b_ratio)
-plt.savefig(prefix+'_AB_RATIO_PLOT.png')
+plt.savefig(prefix+'_PLOT_INDICATOR_AB_RATION.png')
 plt.show()
 
 plt.hist(recurrent_weights)
-plt.savefig(prefix+'_RECURRENT_WEIGHT_PLOT.png')
+plt.savefig(prefix+'_PLOT_INDICATOR_RECURRENT_WEIGHT.png')
 plt.show()
