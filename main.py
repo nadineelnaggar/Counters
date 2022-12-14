@@ -486,6 +486,10 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
         time_mins, time_secs = timeSince(start, epoch + 1 / num_epochs * 100)
         losses.append(total_loss/len(X))
 
+        train_val_acc, train_val_loss = validate(model, X, X_notencoded, y, y_notencoded, criterion)
+        train_val_accuracies.append(train_val_acc)
+        train_val_losses.append(train_val_loss)
+
         with open(train_log, 'a') as f:
             f.write('Accuracy for epoch ' + str(epoch) + '=' + str(round(accuracy, 2)) + '%, avg train loss = ' +
                     str(total_loss / len(X)) +
@@ -503,9 +507,7 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
         conf_matrix = sklearn.metrics.confusion_matrix(expected_classes, predicted_classes)
         confusion_matrices.append(conf_matrix)
 
-        train_val_acc, train_val_loss = validate(model, X, X_notencoded, y, y_notencoded, criterion)
-        train_val_accuracies.append(train_val_acc)
-        train_val_losses.append(train_val_loss)
+
 
         if epoch == num_epochs - 1:
             # print('\n////////////////////////////////////////////////////////////////////////////////////////\n')
@@ -607,7 +609,7 @@ def validate(model, X, X_notencoded, y, y_notencoded, criterion):
     num_samples = len(X)
 
 
-    print(model)
+    # print(model)
 
     num_correct = 0
     confusion = torch.zeros(num_classes, num_classes)
