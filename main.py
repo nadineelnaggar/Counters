@@ -134,6 +134,9 @@ with open(test_50_log,'w') as f:
 num_classes = 2
 n_letters = 2
 
+if task=='TernaryBracketCounting':
+    num_classes=3
+
 def read_datasets():
     x = []
     y = []
