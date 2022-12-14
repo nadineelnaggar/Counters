@@ -331,7 +331,7 @@ def encode_sentence(sentence):
 def encode_labels(label):
     if task=='TernaryBracketCounting':
         outt = torch.zeros((len(labels)))
-        outt[0][labels.index(label)]=1
+        outt[labels.index(label)]=1
         return outt
     else:
         return torch.tensor([labels.index(label)], dtype=torch.float32)
