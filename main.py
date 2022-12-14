@@ -472,7 +472,7 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
             class_category = y_notencoded[i]
 
             # hidden = model.init_hidden()
-            if model.model_name=='LinearBracketCounter':
+            if model.model_name=='LinearBracketCounter' or model.model_name=='TernaryLinearBracketCounter':
                 previous_state = torch.tensor([0],dtype=torch.float32)
             elif model.model_name=='NonZeroReLUCounter':
                 opening_brackets = torch.tensor([0],dtype=torch.float32)
