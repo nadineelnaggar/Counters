@@ -22,13 +22,14 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model_name',type=str)
-parser.add_argument('--task',type=str,default='Dyck1Classification', help='Dyck1Classification or BracketCounting')
+parser.add_argument('--task',type=str,default='Dyck1Classification', help='Dyck1Classification or BracketCounting or TernaryBracketCounting')
 parser.add_argument('--train_seq_length',type=int,default=4, help='length of sequences in training set: 4, 8, 16')
 # parser.add_argument('--long_seq_length',type=int,default=30,help='length of sequences in long test set (20,30,40,50 tokens)')
 parser.add_argument('--runtime',type=str,default='colab',help='colab or local')
 parser.add_argument('--num_epochs',type=int)
-parser.add_argument('--output_activation',type=str,default='Sigmoid',help='Sigmoid or Clipping')
+parser.add_argument('--output_activation',type=str,default='Sigmoid',help='Sigmoid or Clipping or Softmax')
 parser.add_argument('--initialisation',type=str,default='random',help='random or correct')
+parser.add_argument('--oversampling',type=str,default='OversampledDataset', help='OversampledDataset or NonOversampledDataset')
 
 
 args = parser.parse_args()
@@ -42,6 +43,7 @@ num_epochs = args.num_epochs
 output_activation = args.output_activation
 task = args.task
 initialisation=args.initialisation
+oversampling = args.oversampling
 
 # num_epochs = 50
 num_runs = 10
@@ -54,6 +56,8 @@ if task=='Dyck1Classification':
     labels = ['valid','invalid']
 elif task=='BracketCounting':
     labels = ['ZeroNeg', 'Pos']
+elif task=='TernaryBracketCounting':
+    labels=['Neg', 'Zero', 'Pos']
 
 def classFromOutput(output):
     if output.item() > 0.5:
@@ -71,7 +75,7 @@ elif runtime=='colab':
     path = "/content/drive/MyDrive/PhD/EXPT_LOGS/Counters/"+str(task)+"/"
 
 
-prefix = path+output_activation+"_activation_"+str(train_seq_length)+'train_seq_length_'+initialisation+"_initialisation_"+str(num_epochs)+"epochs"
+prefix = path+output_activation+"_activation_"+str(train_seq_length)+'train_seq_length_'+initialisation+"_initialisation_"+str(num_epochs)+"epochs"+"_"+oversampling
 
 file_name = prefix+'.txt'
 train_log = prefix+'_TRAIN LOG.txt'
@@ -126,18 +130,32 @@ def read_datasets():
     if train_seq_length==2:
         if model_name=='NonZeroReLUCounter':
             read_file = 'Dyck1Dataset2Tokens.txt'
-        elif model_name=='LinearBracketCounter':
+        elif model_name=='LinearBracketCounter' and oversampling=='OversampledDataset':
             read_file = 'CounterDataset2Tokens.txt'
+        elif model_name=='LinearBracketCounter' and oversampling=='NonOversampledDataset':
+            read_file = 'CounterDataset2TokensNoOversampling.txt'
     elif train_seq_length==4:
         if model_name=='NonZeroReLUCounter':
             read_file = 'Dyck1Dataset4Tokens.txt'
-        elif model_name=='LinearBracketCounter':
+        elif model_name=='LinearBracketCounter' and oversampling=='OversampledDataset':
             read_file = 'CounterDataset4Tokens.txt'
+        elif model_name=='LinearBracketCounter' and oversampling=='NonOversampledDataset':
+            read_file = 'CounterDataset4TokensNoOversampling.txt'
     elif train_seq_length==8:
         if model_name=='NonZeroReLUCounter':
             read_file = 'Dyck1Dataset8Tokens.txt'
-        elif model_name=='LinearBracketCounter':
+        elif model_name=='LinearBracketCounter' and oversampling=='OversampledDataset':
             read_file = 'CounterDataset8Tokens.txt'
+        elif model_name=='LinearBracketCounter' and oversampling=='NonOversampledDataset':
+            read_file = 'CounterDataset8TokensNoOversampling.txt'
+    elif train_seq_length == 16:
+        # if model_name == 'NonZeroReLUCounter':
+        #     read_file = 'Dyck1Dataset8Tokens.txt'
+        # elif model_name == 'LinearBracketCounter' and oversampling == 'OversampledDataset':
+        if model_name == 'LinearBracketCounter' and oversampling == 'OversampledDataset':
+            read_file = 'CounterDataset16Tokens.txt'
+        elif model_name == 'LinearBracketCounter' and oversampling == 'NonOversampledDataset':
+            read_file = 'CounterDataset16TokensNoOversampling.txt'
 
     with open(read_file, 'r') as f:
         for line in f:
@@ -322,6 +340,8 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
         criterion = nn.BCELoss()
     elif output_activation=='Clipping':
         criterion=nn.MSELoss()
+    elif output_activation=='Softmax':
+        criterion=nn.CrossEntropyLoss()
     # learning_rate = args.learning_rate
     # optimiser = optim.Adam(model.parameters(), lr=learning_rate)
     optimiser = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=learning_rate)
@@ -336,6 +356,7 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
     print_flag = False
     num_samples = len(X)
     confusion_matrices = []
+
 
 
     print(model)
