@@ -105,7 +105,8 @@ counter_input_size = 3
 counter_output_size = 1
 vocab = ['(', ')']
 if task=='TernaryBracketCounting':
-        output_size=len(labels)
+        output_size=3
+
 
 
 
