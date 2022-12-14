@@ -46,6 +46,7 @@ class TernaryLinearBracketCounter(nn.Module):
         x = self.out(x)
         if self.output_activation=='Softmax':
             x = self.softmax(x.unsqueeze(dim=1))
+            print('x=',x)
         elif self.output_activation=='Clipping':
             x = torch.clamp(x,min=0,max=1)
         return x, previous_count
