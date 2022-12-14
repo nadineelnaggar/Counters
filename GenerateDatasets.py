@@ -343,6 +343,9 @@ count8_seqs, count8_labels = oversampleMinority(seqsCount8TokensPos,'Pos', seqsC
 seqsCount10TokensPos, seqsCount10TokensZeroNeg = generateCountDataset(5,5)
 count10_seqs, count10_labels = oversampleMinority(seqsCount10TokensPos,'Pos', seqsCount10TokensZeroNeg,'ZeroNeg')
 
+seqsCount16TokensPos, seqsCount16TokensZeroNeg = generateCountDataset(8,8)
+count16_seqs, count16_labels = oversampleMinority(seqsCount16TokensPos,'Pos', seqsCount16TokensZeroNeg,'ZeroNeg')
+
 # with open('CountDataset2Tokens.txt','a') as f:
 #     for i in range(len(count2_seqs)):
 #         f.write(count2_seqs[i]+','+count2_labels[i]+'\n')
@@ -382,6 +385,28 @@ for i in range(len(count8_seqs)):
 
 count_upto8_seqs,count_upto8_labels = shuffle(count_upto8_seqs,count_upto8_labels)
 
+
+count_upto16_seqs = []
+count_upto16_labels = []
+
+for i in range(len(count_upto4_seqs)):
+    count_upto16_seqs.append(count_upto4_seqs[i])
+    count_upto16_labels.append(count_upto4_labels[i])
+
+for i in range(len(count8_seqs)):
+    count_upto16_seqs.append(count8_seqs[i])
+    count_upto16_labels.append(count8_labels[i])
+
+for i in range(len(count16_seqs)):
+    count_upto16_seqs.append(count16_seqs[i])
+    count_upto16_labels.append(count16_labels[i])
+
+# for i in range(len(count10_seqs)):
+#     count_upto16_seqs.append(count10_seqs[i])
+#     count_upto16_labels.append(count10_labels[i])
+
+count_upto16_seqs,count_upto16_labels = shuffle(count_upto16_seqs,count_upto16_labels)
+
 # with open('CounterDataset2Tokens.txt','w') as f:
 #     f.write('')
 
@@ -392,8 +417,8 @@ count_upto8_seqs,count_upto8_labels = shuffle(count_upto8_seqs,count_upto8_label
 #     f.write('')
 
 
-with open('CounterDataset10Tokens.txt','w') as f:
-    f.write('')
+# with open('CounterDataset10Tokens.txt','w') as f:
+#     f.write('')
 
 # with open('Dyck1Dataset2Tokens.txt','w') as f:
 #     f.write('')
@@ -404,7 +429,10 @@ with open('CounterDataset10Tokens.txt','w') as f:
 # with open('Dyck1Dataset8Tokens.txt','w') as f:
 #     f.write('')
 
-with open('Dyck1Dataset10Tokens.txt','w') as f:
+# with open('Dyck1Dataset10Tokens.txt','w') as f:
+#     f.write('')
+
+with open('Dyck1Dataset16Tokens.txt','w') as f:
     f.write('')
 
 # with open('CounterDataset2Tokens.txt','a') as f:
@@ -421,10 +449,14 @@ with open('Dyck1Dataset10Tokens.txt','w') as f:
 #         f.write(count_upto8_seqs[i] + ',' + count_upto8_labels[i] + '\n')
 
 
-with open('CounterDataset10Tokens.txt','a') as f:
-    for i in range(len(count10_seqs)):
-        f.write(count10_seqs[i]+','+count10_labels[i]+'\n')
+# with open('CounterDataset10Tokens.txt','a') as f:
+#     for i in range(len(count10_seqs)):
+#         f.write(count10_seqs[i]+','+count10_labels[i]+'\n')
 
+
+with open('CounterDataset16Tokens.txt','a') as f:
+    for i in range(len(count_upto16_seqs)):
+        f.write(count_upto16_seqs[i] + ',' + count_upto16_labels[i] + '\n')
 
 ###############
 
@@ -483,9 +515,9 @@ dyck_seqs10_valid, dyck_seqs_10_invalid = generateDataset(5,5)
 dyck_seqs_10, dyck_labels_10 = oversampleMinority(dyck_seqs10_valid,'valid', dyck_seqs_10_invalid,'invalid')
 
 
-with open('Dyck1Dataset10Tokens.txt','a') as f:
-    for i in range(len(dyck_seqs_10)):
-        f.write(dyck_seqs_10[i]+','+dyck_labels_10[i]+'\n')
+# with open('Dyck1Dataset10Tokens.txt','a') as f:
+#     for i in range(len(dyck_seqs_10)):
+#         f.write(dyck_seqs_10[i]+','+dyck_labels_10[i]+'\n')
 
 #GENERATE THE LONGER SETS BY USING THE SUZGUN SEQUENCES AND THEN ADAPTING THEM TO MAKE THEM INVALID OR WHATEVER, TO MATCH THE DATASETS WE NEED
 #WRITE DATASETS TO TEXT FILES AND WRITE PYTORCH DATASETS TO READ THESE txt file DATASETS
@@ -493,3 +525,5 @@ with open('Dyck1Dataset10Tokens.txt','a') as f:
 
 # print(generateLabelledCountDataset(10,10))
 # print(generateLabelledCountDataset(15,15))
+
+
