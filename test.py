@@ -173,3 +173,21 @@ def encode_labels(label):
 print(encode_labels('Neg'))
 print(encode_labels('Zero'))
 print(encode_labels('Pos'))
+
+def classFromOutput(output):
+
+    if task=='Dyck1Classification' or task=='BracketCounting':
+        if output.item() > 0.5:
+            category_i = 1
+        else:
+            category_i = 0
+    elif task == 'TernaryBracketCounting':
+        top_n, top_i = output.topk(1)
+        category_i = top_i[0].item()
+        # return labels[category_i], category_i
+    return labels[category_i], category_i
+
+print(classFromOutput(torch.tensor([0.5,0.3,0.2], dtype=torch.float32)))
+print(classFromOutput(torch.tensor([0.1,0.7,0.2], dtype=torch.float32)))
+print(classFromOutput(torch.tensor([0.6,0.1,0.2], dtype=torch.float32)))
+print(classFromOutput(torch.tensor([0.1,0.4,0.5], dtype=torch.float32)))

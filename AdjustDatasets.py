@@ -183,3 +183,119 @@ def makeDatasetTernary(dataset_name):
 # makeDatasetTernary('CounterDataset30TokensNoOversampling.txt')
 # makeDatasetTernary('CounterDataset40TokensNoOversampling.txt')
 # makeDatasetTernary('CounterDataset50TokensNoOversampling.txt')
+
+
+
+def makeDatasetTernaryRegression(dataset_name):
+    x = []
+    y = []
+    with open(dataset_name, 'r') as f:
+        for line in f:
+            line = line.split(",")
+            sentence = line[0].strip()
+            label = line[1].strip()
+            if sentence not in x:
+                x.append(sentence)
+                y.append(str(sentence.count('(') - sentence.count(')')))
+                # if sentence.count('(') > sentence.count(')'):
+                #     y.append('Pos')
+                # elif sentence.count('(')==sentence.count(')'):
+                #     y.append('Zero')
+                # elif sentence.count('(') < sentence.count(')'):
+                #     y.append('Neg')
+                # y.append(label)
+    print('len x = ', len(x))
+    print('len y = ', len(y))
+    if dataset_name=='CounterDataset2Tokens.txt':
+        with open('RegressionCounterDataset2TokensTernary.txt', 'a') as f:
+            for i in range(len(x)):
+                f.write(x[i] + ',' + y[i] + '\n')
+    elif dataset_name=='CounterDataset4Tokens.txt':
+        with open('RegressionCounterDataset4TokensTernary.txt', 'a') as f:
+            for i in range(len(x)):
+                f.write(x[i] + ',' + y[i] + '\n')
+    elif dataset_name=='CounterDataset8Tokens.txt':
+        with open('RegressionCounterDataset8TokensTernary.txt', 'a') as f:
+            for i in range(len(x)):
+                f.write(x[i] + ',' + y[i] + '\n')
+    elif dataset_name=='CounterDataset16Tokens.txt':
+        with open('RegressionCounterDataset16TokensTernary.txt', 'a') as f:
+            for i in range(len(x)):
+                f.write(x[i] + ',' + y[i] + '\n')
+    elif dataset_name=='CounterDataset10Tokens.txt':
+        with open('RegressionCounterDataset10TokensTernary.txt', 'a') as f:
+            for i in range(len(x)):
+                f.write(x[i] + ',' + y[i] + '\n')
+    elif dataset_name=='CounterDataset20Tokens.txt':
+        with open('RegressionCounterDataset20TokensTernary.txt', 'a') as f:
+            for i in range(len(x)):
+                f.write(x[i] + ',' + y[i] + '\n')
+    elif dataset_name=='CounterDataset30Tokens.txt':
+        with open('RegressionCounterDataset30TokensTernary.txt', 'a') as f:
+            for i in range(len(x)):
+                f.write(x[i] + ',' + y[i] + '\n')
+    elif dataset_name=='CounterDataset40Tokens.txt':
+        with open('RegressionCounterDataset40TokensTernary.txt', 'a') as f:
+            for i in range(len(x)):
+                f.write(x[i] + ',' + y[i] + '\n')
+    elif dataset_name=='CounterDataset50Tokens.txt':
+        with open('RegressionCounterDataset50TokensTernary.txt', 'a') as f:
+            for i in range(len(x)):
+                f.write(x[i] + ',' + y[i] + '\n')
+    elif dataset_name=='CounterDataset2TokensNoOversampling.txt':
+        with open('RegressionCounterDataset2TokensTernaryNoOversampling.txt', 'a') as f:
+            for i in range(len(x)):
+                f.write(x[i] + ',' + y[i] + '\n')
+    elif dataset_name=='CounterDataset4TokensNoOversampling.txt':
+        with open('RegressionCounterDataset4TokensTernaryNoOversampling.txt', 'a') as f:
+            for i in range(len(x)):
+                f.write(x[i] + ',' + y[i] + '\n')
+    elif dataset_name=='CounterDataset8TokensNoOversampling.txt':
+        with open('RegressionCounterDataset8TokensTernaryNoOversampling.txt', 'a') as f:
+            for i in range(len(x)):
+                f.write(x[i] + ',' + y[i] + '\n')
+    elif dataset_name=='CounterDataset16TokensNoOversampling.txt':
+        with open('RegressionCounterDataset16TokensTernaryNoOversampling.txt', 'a') as f:
+            for i in range(len(x)):
+                f.write(x[i] + ',' + y[i] + '\n')
+    elif dataset_name=='CounterDataset10TokensNoOversampling.txt':
+        with open('RegressionCounterDataset10TokensTernaryNoOversampling.txt', 'a') as f:
+            for i in range(len(x)):
+                f.write(x[i] + ',' + y[i] + '\n')
+    elif dataset_name=='CounterDataset20TokensNoOversampling.txt':
+        with open('RegressionCounterDataset20TokensTernaryNoOversampling.txt', 'a') as f:
+            for i in range(len(x)):
+                f.write(x[i] + ',' + y[i] + '\n')
+    elif dataset_name=='CounterDataset30TokensNoOversampling.txt':
+        with open('RegressionCounterDataset30TokensTernaryNoOversampling.txt', 'a') as f:
+            for i in range(len(x)):
+                f.write(x[i] + ',' + y[i] + '\n')
+    elif dataset_name=='CounterDataset40TokensNoOversampling.txt':
+        with open('RegressionCounterDataset40TokensTernaryNoOversampling.txt', 'a') as f:
+            for i in range(len(x)):
+                f.write(x[i] + ',' + y[i] + '\n')
+    elif dataset_name=='CounterDataset50TokensNoOversampling.txt':
+        with open('RegressionCounterDataset50TokensTernaryNoOversampling.txt', 'a') as f:
+            for i in range(len(x)):
+                f.write(x[i] + ',' + y[i] + '\n')
+
+
+makeDatasetTernaryRegression('CounterDataset2Tokens.txt')
+makeDatasetTernaryRegression('CounterDataset4Tokens.txt')
+makeDatasetTernaryRegression('CounterDataset8Tokens.txt')
+makeDatasetTernaryRegression('CounterDataset16Tokens.txt')
+makeDatasetTernaryRegression('CounterDataset2TokensNoOversampling.txt')
+makeDatasetTernaryRegression('CounterDataset4TokensNoOversampling.txt')
+makeDatasetTernaryRegression('CounterDataset8TokensNoOversampling.txt')
+makeDatasetTernaryRegression('CounterDataset16TokensNoOversampling.txt')
+
+makeDatasetTernaryRegression('CounterDataset10Tokens.txt')
+makeDatasetTernaryRegression('CounterDataset20Tokens.txt')
+makeDatasetTernaryRegression('CounterDataset30Tokens.txt')
+makeDatasetTernaryRegression('CounterDataset40Tokens.txt')
+makeDatasetTernaryRegression('CounterDataset50Tokens.txt')
+makeDatasetTernaryRegression('CounterDataset10TokensNoOversampling.txt')
+makeDatasetTernaryRegression('CounterDataset20TokensNoOversampling.txt')
+makeDatasetTernaryRegression('CounterDataset30TokensNoOversampling.txt')
+makeDatasetTernaryRegression('CounterDataset40TokensNoOversampling.txt')
+makeDatasetTernaryRegression('CounterDataset50TokensNoOversampling.txt')
