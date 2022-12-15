@@ -521,6 +521,11 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
 
             guess, guess_i = classFromOutput(out)
             class_i = labels.index(class_category)
+
+            print('guess_i = ',guess_i)
+            print('class_i = ',class_i)
+            print('class_category = ',class_category)
+
             confusion[class_i][guess_i] += 1
             # current_loss += loss
             expected_classes.append(class_i)
