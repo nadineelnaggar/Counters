@@ -4,12 +4,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sklearn
 import argparse
-from models import NonZeroReLUCounter,LinearBracketCounter
+from models import NonZeroReLUCounter,LinearBracketCounter, TernaryLinearBracketCounter
 import torch.optim as optim
 import pandas as pd
 import time
 import math
-
+from os.path import exists
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -71,7 +71,11 @@ checkpoint = prefix+'_CHECKPOINT_'
 excel_name_indicators = path+''+model_name+'_INDICATORS.xlsx'
 
 input_size = 2
-output_size = 1
+
+if model_name=='TernaryLinearBracketCounter':
+    output_size = 3
+else:
+    output_size = 1
 hidden_size = 2
 counter_input_size = 3
 counter_output_size = 1
@@ -83,6 +87,8 @@ def select_model():
         model = NonZeroReLUCounter(counter_input_size=counter_input_size,counter_output_size=counter_output_size,output_size=output_size, initialisation=initialisation, output_activation=output_activation)
     elif task=='BracketCounting':
         model = LinearBracketCounter(counter_input_size=counter_input_size,counter_output_size=counter_output_size,output_size=output_size, initialisation=initialisation, output_activation=output_activation)
+    elif task=='TernaryBracketCounting':
+        model = TernaryLinearBracketCounter(counter_input_size=counter_input_size,counter_output_size=counter_output_size,output_size=output_size, initialisation=initialisation, output_activation=output_activation)
 
     return model.to(device)
 

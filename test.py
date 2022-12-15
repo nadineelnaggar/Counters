@@ -4,6 +4,7 @@ vocab=['(', ')']
 labels = ['valid', 'invalid']
 from sklearn.utils import shuffle
 import math
+from models import TernaryLinearBracketCounter
 
 def encode_sentence(sentence):
 
@@ -191,3 +192,6 @@ print(classFromOutput(torch.tensor([0.5,0.3,0.2], dtype=torch.float32)))
 print(classFromOutput(torch.tensor([0.1,0.7,0.2], dtype=torch.float32)))
 print(classFromOutput(torch.tensor([0.6,0.1,0.2], dtype=torch.float32)))
 print(classFromOutput(torch.tensor([0.1,0.4,0.5], dtype=torch.float32)))
+
+
+model = TernaryLinearBracketCounter(counter_input_size=3, counter_output_size=1, output_size=1, output_activation='Softmax', initialisation='ranodm')

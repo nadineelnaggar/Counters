@@ -412,6 +412,7 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
         criterion=nn.MSELoss()
     elif output_activation=='Softmax':
         criterion=nn.CrossEntropyLoss()
+        # criterion = nn.MSELoss()
     # learning_rate = args.learning_rate
     # optimiser = optim.Adam(model.parameters(), lr=learning_rate)
     optimiser = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=learning_rate)
@@ -502,6 +503,12 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
 
             loss = criterion(out, target_seq)
             total_loss += loss.item()
+
+            print('out = ',out)
+            print('target_seq = ',target_seq)
+            print('loss.item() = ',loss.item())
+            print('total loss = ',total_loss)
+
             loss.backward()
             optimiser.step()
 
