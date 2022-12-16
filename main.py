@@ -504,10 +504,10 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
             loss = criterion(out, target_seq)
             total_loss += loss.item()
 
-            print('out = ',out)
-            print('target_seq = ',target_seq)
-            print('loss.item() = ',loss.item())
-            print('total loss = ',total_loss)
+            # print('out = ',out)
+            # print('target_seq = ',target_seq)
+            # print('loss.item() = ',loss.item())
+            # print('total loss = ',total_loss)
 
             loss.backward()
             optimiser.step()
@@ -522,9 +522,9 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
             guess, guess_i = classFromOutput(out)
             class_i = labels.index(class_category)
 
-            print('guess_i = ',guess_i)
-            print('class_i = ',class_i)
-            print('class_category = ',class_category)
+            # print('guess_i = ',guess_i)
+            # print('class_i = ',class_i)
+            # print('class_category = ',class_category)
 
             confusion[class_i][guess_i] += 1
             # current_loss += loss
