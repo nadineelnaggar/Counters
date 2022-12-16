@@ -22,6 +22,8 @@ parser.add_argument('--runtime',type=str,default='colab',help='colab or local')
 parser.add_argument('--num_epochs',type=int)
 parser.add_argument('--output_activation',type=str,default='Sigmoid',help='Sigmoid or Clipping')
 parser.add_argument('--initialisation',type=str,default='random',help='random or correct')
+parser.add_argument('--oversampling',type=str,default='OversampledDataset', help='OversampledDataset or NonOversampledDataset')
+
 
 args = parser.parse_args()
 
@@ -34,6 +36,7 @@ num_epochs = args.num_epochs
 output_activation = args.output_activation
 task = args.task
 initialisation=args.initialisation
+oversampling = args.oversampling
 
 # num_epochs = 50
 num_runs = 10
@@ -54,7 +57,7 @@ if runtime=='local':
 elif runtime=='colab':
     path = "/content/drive/MyDrive/PhD/EXPT_LOGS/Counters/"+str(task)+"/"
 
-prefix = path+output_activation+"_activation_"+str(train_seq_length)+'train_seq_length_'+initialisation+"_initialisation_"+str(num_epochs)+"epochs"
+prefix = path+output_activation+"_activation_"+str(train_seq_length)+'train_seq_length_'+initialisation+"_initialisation_"+str(num_epochs)+"epochs"+"_"+oversampling
 
 # file_name = prefix+'.txt'
 # train_log = prefix+'_TRAIN LOG.txt'
