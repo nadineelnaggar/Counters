@@ -113,7 +113,7 @@ for run in range(num_runs):
     print(model.counter.weight)
     print(model.out.weight)
     print('if input = (, sum = ',model.counter.weight[0][0].item())
-    print('if input = (, sum = ',model.counter.weight[0][1].item())
+    print('if input = ), sum = ',model.counter.weight[0][1].item())
     print('recurrent weight = ',model.counter.weight[0][2].item())
     print('ratio of a and b = ',model.counter.weight[0][0].item()/model.counter.weight[0][1].item())
     a_b_ratio.append(model.counter.weight[0][0].item()/model.counter.weight[0][1].item())
