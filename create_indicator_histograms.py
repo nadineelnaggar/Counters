@@ -66,7 +66,7 @@ prefix = path+output_activation+"_activation_"+str(train_seq_length)+'train_seq_
 # test_30_log = prefix+'_TEST_LOG 30_TOKENS.txt'
 # test_40_log = prefix+'_TEST_LOG 40_TOKENS.txt'
 # test_50_log = prefix+'_TEST_LOG 50_TOKENS.txt'
-excel_name = prefix+'.xlsx'
+read_excel_name = prefix+'.xlsx'
 modelname = prefix+"_MODEL_"
 # optimname = prefix+"_OPTIMISER_"
 checkpoint = prefix+'_CHECKPOINT_'
@@ -98,6 +98,19 @@ def select_model():
 a_b_ratio = []
 recurrent_weights = []
 
+def read_sheets():
+    sheet_names = []
+    for i in range(num_runs):
+        sheet_name = "run"+str(i)
+        sheet_names.append(sheet_name)
+    df = pd.read_excel(read_excel_name,sheet_name=sheet_names)
+    dfs = []
+    for i in range(num_runs):
+        dfs.append(df.get(sheet_names[i]))
+    return dfs
+
+dfs=read_sheets()
+
 for run in range(num_runs):
     # for epoch in range(num_epochs):
         # if epoch%checkpoint_step==0:
@@ -120,6 +133,8 @@ for run in range(num_runs):
     recurrent_weights.append(model.counter.weight[0][2].item())
 
 
+
+
 plt.subplots()
 plt.hist(a_b_ratio)
 plt.savefig(prefix+'_PLOT_INDICATOR_AB_RATIO.png')
@@ -128,3 +143,9 @@ plt.show()
 plt.hist(recurrent_weights)
 plt.savefig(prefix+'_PLOT_INDICATOR_RECURRENT_WEIGHT.png')
 plt.show()
+
+
+# writer = pd.ExcelWriter(excel_name, engine='xlsxwriter')
+#
+#     df1.to_excel(writer, index=False)
+#     writer.save()

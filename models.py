@@ -31,7 +31,8 @@ class TernaryLinearBracketCounter(nn.Module):
         super(TernaryLinearBracketCounter, self).__init__()
         self.model_name='TernaryLinearBracketCounter'
         self.counter = nn.Linear(counter_input_size,counter_output_size, bias=False)
-        self.out = nn.Linear(counter_output_size,output_size, bias=False)
+        # self.out = nn.Linear(counter_output_size,output_size, bias=False)
+        self.out = nn.Linear(counter_output_size, output_size, bias=True)
         self.output_activation = output_activation
         if initialisation=='correct':
             self.counter.weight =  nn.Parameter(torch.tensor([[1, -1, 1]], dtype=torch.float32))
