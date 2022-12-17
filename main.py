@@ -607,6 +607,13 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
             print('num_correct = ',num_correct)
             print('Final training accuracy = ', num_correct / len(X) * 100, '%')
             # print('**************************************************************************\n')
+            heat_train = sns.heatmap(conf_matrix, annot=True, cbar=False, xticklabels=labels, yticklabels=labels)
+            bottom1, top1 = heat_train.get_ylim()
+            heat_train.set_ylim(bottom1 + 0.5, top1 - 0.5)
+            # plt.show()
+            plt.xlabel('Predictions')
+            plt.ylabel('Targets')
+            plt.savefig(prefix + '_run_' + str(run) + '_CONFUSION_MATRIX_TRAIN.png')
 
 
 
@@ -653,6 +660,7 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
     # plt.savefig(plt_name+'')
     # print('len epochs = ',len(epochs))
     # print('len losses = ',len(losses))
+
 
 
     df1['epoch'] = epochs
