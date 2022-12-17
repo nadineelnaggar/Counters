@@ -946,7 +946,7 @@ def test(model, X, X_notencoded, y, y_notencoded, dataset, run):
 
 
         conf_matrix = sklearn.metrics.confusion_matrix(expected_classes, predicted_classes)
-    heat = sns.heatmap(conf, annot=True, cbar=False, xticklabels=labels, yticklabels=labels)
+    heat = sns.heatmap(conf_matrix, annot=True, cbar=False, xticklabels=labels, yticklabels=labels)
     bottom1, top1 = heat.get_ylim()
     heat.set_ylim(bottom1 + 0.5, top1 - 0.5)
     # plt.show()
