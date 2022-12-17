@@ -118,3 +118,78 @@
 #         labels.append('Zero_Neg')
 #     sentences, labels = shuffle(sentences, labels,random_state=0)
 #     return sentences, labels
+
+# x = []
+# y = []
+
+import random
+from random import randint
+from sklearn.utils import shuffle
+
+def balanceDataset(dataset):
+    x = []
+    y = []
+    pos_x = []
+    neg_x = []
+    zero_x = []
+    with open(dataset,'r') as f:
+        for line in f:
+            line = line.split(",")
+            sentence = line[0].strip()
+            label = line[1].strip()
+            x.append(sentence)
+            y.append(label)
+            if label=='Pos':
+                pos_x.append(sentence)
+            elif label=='Neg':
+                neg_x.append(sentence)
+            elif label=='Zero':
+                zero_x.append(sentence)
+
+    count_pos = len(pos_x)
+    count_neg = len(neg_x)
+    count_zero = len(zero_x)
+    
+    majority_length = max(count_neg,count_pos,count_zero)
+    count_pos1 = count_pos
+    while(count_pos1<majority_length):
+        idx = randint(0,count_pos-1)
+        x.append(pos_x[idx])
+        y.append('Pos')
+        count_pos1+=1
+    
+    count_neg1 = count_neg
+    while (count_neg1 < majority_length):
+        idx = randint(0,count_neg-1)
+        x.append(neg_x[idx])
+        y.append('Neg')
+        count_neg1 += 1
+
+    count_zero1 = count_zero
+    while (count_zero1 < majority_length):
+        idx = randint(0,count_zero-1)
+        x.append(zero_x[idx])
+        y.append('Zero')
+        count_zero1 += 1
+
+    # x, y = random.shuffle(x,y)
+    x,y = shuffle(x,y)
+    dataset_new = dataset[:-4]
+    print(dataset_new)
+    dataset_new = dataset_new+'OversampledDataset.txt'
+    print(dataset_new)
+    with open(dataset_new, 'a') as f:
+        for i in range(len(x)):
+            f.write(x[i] + ',' + y[i] + '\n')
+
+# balanceDataset('CounterDataset2TokensTernary.txt')
+# balanceDataset('CounterDataset4TokensTernary.txt')
+# balanceDataset('CounterDataset8TokensTernary.txt')
+# balanceDataset('CounterDataset10TokensTernary.txt')
+# balanceDataset('CounterDataset20TokensTernary.txt')
+# balanceDataset('CounterDataset50TokensTernary.txt')
+# balanceDataset('CounterDataset30TokensTernary.txt')
+# balanceDataset('CounterDataset40TokensTernary.txt')
+#
+        
+    

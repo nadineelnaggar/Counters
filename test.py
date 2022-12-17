@@ -5,6 +5,14 @@ labels = ['valid', 'invalid']
 from sklearn.utils import shuffle
 import math
 from models import TernaryLinearBracketCounter
+from sklearn.metrics import confusion_matrix
+# from sklearn.metrics import plot_confusion_matrix
+
+import matplotlib.pyplot as plt
+
+import seaborn as sns
+
+
 
 def encode_sentence(sentence):
 
@@ -195,3 +203,49 @@ print(classFromOutput(torch.tensor([0.1,0.4,0.5], dtype=torch.float32)))
 
 
 model = TernaryLinearBracketCounter(counter_input_size=3, counter_output_size=1, output_size=1, output_activation='Softmax', initialisation='ranodm')
+
+
+a = [1,2,3,1,1,2,3,3,2]
+b = [1,2,1,1,3,2,1,3,1]
+
+conf = confusion_matrix(a,b)
+print(conf)
+plt.subplots()
+# b, t = plt.ylim()
+# b+=1
+# t-=1
+# plt.ylim(bottom=150, top=100)
+heat=sns.heatmap(conf, annot=True, xticklabels=[1,2,3], yticklabels=[1,2,3], cmap='Blues', cbar=False)
+bottom1, top1 = heat.get_ylim()
+heat.set_ylim(bottom1 + 0.5, top1 - 0.5)
+        # plt.show()
+plt.xlabel('Predicted')
+plt.ylabel('actual')
+plt.show()
+# plot_confusion_matrix(conf)
+# plt.show()
+
+
+
+filename = '/Users/nadineelnaggar/Google Drive/PhD/EXPT_LOGS/Counters/BracketCounting/Sigmoid_activation_8train_seq_length_correct_initialisation_100epochs_TEST_LOG 50_TOKENS.txt'
+targets = []
+predictions = []
+
+with open(filename,'r') as f:
+    for line in f:
+        if 'rounded output function = ' in line:
+            predictions.append(line[-3:-2])
+        elif 'target = ' in line:
+            targets.append(line[-3:-2])
+
+print(targets)
+print(predictions)
+conf2 = confusion_matrix(targets,predictions)
+heat=sns.heatmap(conf2, annot=True, xticklabels=['ZeroNeg', 'Pos'], yticklabels=['ZeroNeg', 'Pos'], cmap='Blues', cbar=False)
+bottom1, top1 = heat.get_ylim()
+heat.set_ylim(bottom1 + 0.5, top1 - 0.5)
+        # plt.show()
+plt.xlabel('Predictions')
+plt.ylabel('Targets')
+plt.show()
+

@@ -10,6 +10,7 @@ import pandas as pd
 import time
 import math
 from sklearn.metrics import confusion_matrix
+import seaborn as sns
 
 
 
@@ -150,7 +151,7 @@ def read_datasets():
         elif model_name=='TernaryLinearBracketCounter' and oversampling=='NonOversampledDataset':
             read_file = 'CounterDataset2TokensTernaryNoOversampling.txt'
         elif model_name=='TernaryLinearBracketCounter' and oversampling=='OversampledDataset':
-            read_file = 'CounterDataset2TokensTernary.txt'
+            read_file = 'CounterDataset2TokensTernaryOversampledDataset.txt'
     elif train_seq_length==4:
         if model_name=='NonZeroReLUCounter':
             read_file = 'Dyck1Dataset4Tokens.txt'
@@ -161,7 +162,7 @@ def read_datasets():
         elif model_name=='TernaryLinearBracketCounter' and oversampling=='NonOversampledDataset':
             read_file = 'CounterDataset4TokensTernaryNoOversampling.txt'
         elif model_name=='TernaryLinearBracketCounter' and oversampling=='OversampledDataset':
-            read_file = 'CounterDataset4TokensTernary.txt'
+            read_file = 'CounterDataset4TokensTernaryOversampledDataset.txt'
     elif train_seq_length==8:
         if model_name=='NonZeroReLUCounter':
             read_file = 'Dyck1Dataset8Tokens.txt'
@@ -172,7 +173,7 @@ def read_datasets():
         elif model_name=='TernaryLinearBracketCounter' and oversampling=='NonOversampledDataset':
             read_file = 'CounterDataset8TokensTernaryNoOversampling.txt'
         elif model_name=='TernaryLinearBracketCounter' and oversampling=='OversampledDataset':
-            read_file = 'CounterDataset8TokensTernary.txt'
+            read_file = 'CounterDataset8TokensTernaryOversampledDataset.txt'
     elif train_seq_length == 16:
         # if model_name == 'NonZeroReLUCounter':
         #     read_file = 'Dyck1Dataset8Tokens.txt'
@@ -267,14 +268,14 @@ def read_datasets():
                 x_50.append(sentence)
                 y_50.append(label)
     elif model_name == 'TernaryLinearBracketCounter':
-        with open('CounterDataset20TokensTernary.txt', 'r') as f:
+        with open('CounterDataset20TokensTernaryOversampledDataset.txt', 'r') as f:
             for line in f:
                 line = line.split(",")
                 sentence = line[0].strip()
                 label = line[1].strip()
                 x_20.append(sentence)
                 y_20.append(label)
-        with open('CounterDataset30TokensTernary.txt', 'r') as f:
+        with open('CounterDataset30TokensTernaryOversampledDataset.txt', 'r') as f:
             for line in f:
                 line = line.split(",")
                 sentence = line[0].strip()
@@ -282,7 +283,7 @@ def read_datasets():
                 x_30.append(sentence)
                 y_30.append(label)
 
-        with open('CounterDataset40TokensTernary.txt', 'r') as f:
+        with open('CounterDataset40TokensTernaryOversampledDataset.txt', 'r') as f:
             for line in f:
                 line = line.split(",")
                 sentence = line[0].strip()
@@ -290,7 +291,7 @@ def read_datasets():
                 x_40.append(sentence)
                 y_40.append(label)
 
-        with open('CounterDataset50TokensTernary.txt', 'r') as f:
+        with open('CounterDataset50TokensTernaryOversampledDataset.txt', 'r') as f:
             for line in f:
                 line = line.split(",")
                 sentence = line[0].strip()
@@ -569,10 +570,19 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
         time_mins, time_secs = timeSince(start, epoch + 1 / num_epochs * 100)
         losses.append(total_loss/len(X))
 
-        train_val_acc, train_val_loss = validate(model, X, X_notencoded, y, y_notencoded, criterion)
+        train_val_acc, train_val_loss, train_val_conf = validate(model, X, X_notencoded, y, y_notencoded, criterion)
         train_val_accuracies.append(train_val_acc)
         train_val_losses.append(train_val_loss)
 
+        if epoch==num_epochs-1:
+            plt.subplots()
+            heat_train_val = sns.heatmap(train_val_conf, annot=True, cbar=False, xticklabels=labels, yticklabels=labels)
+            bottom1, top1 = heat_train_val.get_ylim()
+            heat_train_val.set_ylim(bottom1 + 0.5, top1 - 0.5)
+            # plt.show()
+            plt.xlabel('Predictions')
+            plt.ylabel('Targets')
+            plt.savefig(prefix+'_run_'+str(run)+'_CONFUSION_MATRIX_TRAIN_VAL.png')
         with open(train_log, 'a') as f:
             f.write('Accuracy for epoch ' + str(epoch) + '=' + str(round(accuracy, 2)) + '%, avg train loss = ' +
                     str(total_loss / len(X)) +
@@ -805,11 +815,11 @@ def validate(model, X, X_notencoded, y, y_notencoded, criterion):
 
     # print(accuracies)
     # print(accuracy)
-    return accuracy, total_loss/len(X)
+    return accuracy, total_loss/len(X), confusion
 
 
 
-def test(model, X, X_notencoded, y, y_notencoded, dataset):
+def test(model, X, X_notencoded, y, y_notencoded, dataset, run):
     model.eval()
 
     if dataset=='test_20':
@@ -928,7 +938,13 @@ def test(model, X, X_notencoded, y, y_notencoded, dataset):
 
 
         conf_matrix = sklearn.metrics.confusion_matrix(expected_classes, predicted_classes)
-
+    heat = sns.heatmap(conf, annot=True, cbar=False, xticklabels=labels, yticklabels=labels)
+    bottom1, top1 = heat.get_ylim()
+    heat.set_ylim(bottom1 + 0.5, top1 - 0.5)
+    # plt.show()
+    plt.xlabel('Predictions')
+    plt.ylabel('Targets')
+    plt.savefig(prefix + '_run_' + str(run) + '_CONFUSION_MATRIX_'+dataset+'.png')
 
 
 
@@ -1012,13 +1028,13 @@ def main():
         train_accuracies.append(train_accuracy)
         train_dataframes.append(df)
         # test_accuracy = test_model(model, test_loader, 'short')
-        test_20_accuracy = test(model, X_20,X_20_notencoded,y_20,y_20_notencoded, 'test_20')
+        test_20_accuracy = test(model, X_20,X_20_notencoded,y_20,y_20_notencoded, 'test_20', i)
         test_20_accuracies.append(test_20_accuracy)
-        test_30_accuracy = test(model, X_30, X_30_notencoded, y_30, y_30_notencoded, 'test_30')
+        test_30_accuracy = test(model, X_30, X_30_notencoded, y_30, y_30_notencoded, 'test_30', i)
         test_30_accuracies.append(test_30_accuracy)
-        test_40_accuracy = test(model, X_40, X_40_notencoded, y_40, y_40_notencoded, 'test_40')
+        test_40_accuracy = test(model, X_40, X_40_notencoded, y_40, y_40_notencoded, 'test_40', i)
         test_40_accuracies.append(test_40_accuracy)
-        test_50_accuracy = test(model, X_50, X_50_notencoded, y_50, y_50_notencoded, 'test_50')
+        test_50_accuracy = test(model, X_50, X_50_notencoded, y_50, y_50_notencoded, 'test_50', i)
         test_50_accuracies.append(test_50_accuracy)
         # long_test_accuracy = test_model(model, long_loader, 'long')
         # long_test_accuracies.append(long_test_accuracy)

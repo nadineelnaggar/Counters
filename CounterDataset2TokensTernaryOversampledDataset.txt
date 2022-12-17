@@ -1,0 +1,6 @@
+)),Neg
+)(,Zero
+((,Pos
+((,Pos
+)),Neg
+(),Zero
