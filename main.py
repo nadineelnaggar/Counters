@@ -583,6 +583,7 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
             plt.xlabel('Predictions')
             plt.ylabel('Targets')
             plt.savefig(prefix+'_run_'+str(run)+'_CONFUSION_MATRIX_TRAIN_VAL.png')
+            plt.close()
         with open(train_log, 'a') as f:
             f.write('Accuracy for epoch ' + str(epoch) + '=' + str(round(accuracy, 2)) + '%, avg train loss = ' +
                     str(total_loss / len(X)) +
@@ -614,6 +615,7 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
             plt.xlabel('Predictions')
             plt.ylabel('Targets')
             plt.savefig(prefix + '_run_' + str(run) + '_CONFUSION_MATRIX_TRAIN.png')
+            plt.close()
 
 
 
@@ -953,6 +955,7 @@ def test(model, X, X_notencoded, y, y_notencoded, dataset, run):
     plt.xlabel('Predictions')
     plt.ylabel('Targets')
     plt.savefig(prefix + '_run_' + str(run) + '_CONFUSION_MATRIX_'+dataset+'.png')
+    plt.close()
 
 
 
