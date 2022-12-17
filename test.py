@@ -484,3 +484,135 @@ for i in range(10):
     plt.savefig(
         '/Users/nadineelnaggar/Google Drive/PhD/EXPT_LOGS/Counters/BracketCounting/Sigmoid_activation_4train_seq_length_random_initialisation_100epochs_CONFUSION_MATRIX 20_TOKENS_RUN_'+str(i)+'.png')
     plt.close()
+
+
+
+filename = '/Users/nadineelnaggar/Google Drive/PhD/EXPT_LOGS/Counters/BracketCounting/Sigmoid_activation_8train_seq_length_random_initialisation_100epochs_TRAIN LOG_RAW.txt'
+targets = []
+predictions = []
+
+with open(filename,'r') as f:
+    for line in f:
+        if 'rounded output in train function =' in line:
+            predictions.append(line[-3:-2])
+        elif 'target in train function =' in line:
+            targets.append(line[-3:-2])
+
+print('training raw')
+print(targets)
+print(predictions)
+conf2 = confusion_matrix(targets,predictions)
+heat=sns.heatmap(conf2, annot=True, xticklabels=['ZeroNeg', 'Pos'], yticklabels=['ZeroNeg', 'Pos'], cmap='Blues', cbar=False, fmt='d')
+bottom1, top1 = heat.get_ylim()
+heat.set_ylim(bottom1 + 0.5, top1 - 0.5)
+        # plt.show()
+plt.xlabel('Predictions')
+plt.ylabel('Targets')
+plt.savefig('/Users/nadineelnaggar/Google Drive/PhD/EXPT_LOGS/Counters/BracketCounting/Sigmoid_activation_8train_seq_length_random_initialisation_100epochs_CONFUSION_MATRIX TRAIN_ALL.png')
+plt.show()
+plt.close()
+
+print(len(targets))
+print(len(predictions))
+for i in range(10):
+    targets_per_run=targets[354*i:((354*(i+1)))]
+    predictions_per_run=predictions[354*i:((354*(i+1)))]
+    print(len(targets_per_run))
+    print(len(predictions_per_run))
+    conf2 = confusion_matrix(targets_per_run, predictions_per_run)
+    heat = sns.heatmap(conf2, annot=True, xticklabels=['ZeroNeg', 'Pos'], yticklabels=['ZeroNeg', 'Pos'], cmap='Blues',
+                       cbar=False, fmt='d')
+    bottom1, top1 = heat.get_ylim()
+    heat.set_ylim(bottom1 + 0.5, top1 - 0.5)
+    # plt.show()
+    plt.xlabel('Predictions')
+    plt.ylabel('Targets')
+    plt.savefig(
+        '/Users/nadineelnaggar/Google Drive/PhD/EXPT_LOGS/Counters/BracketCounting/Sigmoid_activation_8train_seq_length_random_initialisation_100epochs_CONFUSION_MATRIX TRAIN_RUN_'+str(i)+'.png')
+    plt.close()
+
+
+
+filename = '/Users/nadineelnaggar/Google Drive/PhD/EXPT_LOGS/Counters/BracketCounting/Sigmoid_activation_2train_seq_length_random_initialisation_100epochs_TRAIN LOG_RAW.txt'
+targets = []
+predictions = []
+
+with open(filename,'r') as f:
+    for line in f:
+        if 'rounded output ' in line:
+            predictions.append(line[-3:-2])
+        elif 'target ' in line:
+            targets.append(line[-3:-2])
+
+print(targets)
+print(predictions)
+conf2 = confusion_matrix(targets,predictions)
+heat=sns.heatmap(conf2, annot=True, xticklabels=['ZeroNeg', 'Pos'], yticklabels=['ZeroNeg', 'Pos'], cmap='Blues', cbar=False, fmt='d')
+bottom1, top1 = heat.get_ylim()
+heat.set_ylim(bottom1 + 0.5, top1 - 0.5)
+        # plt.show()
+plt.xlabel('Predictions')
+plt.ylabel('Targets')
+plt.savefig('/Users/nadineelnaggar/Google Drive/PhD/EXPT_LOGS/Counters/BracketCounting/Sigmoid_activation_2train_seq_length_random_initialisation_100epochs_CONFUSION_MATRIX TRAIN_ALL.png')
+plt.show()
+plt.close()
+
+print(len(predictions))
+print(len(targets))
+for i in range(10):
+    targets_per_run=targets[6*i:((6*(i+1)))]
+    predictions_per_run=predictions[6*i:((6*(i+1)))]
+    conf2 = confusion_matrix(targets_per_run, predictions_per_run)
+    heat = sns.heatmap(conf2, annot=True, xticklabels=['ZeroNeg', 'Pos'], yticklabels=['ZeroNeg', 'Pos'], cmap='Blues',
+                       cbar=False, fmt='d')
+    bottom1, top1 = heat.get_ylim()
+    heat.set_ylim(bottom1 + 0.5, top1 - 0.5)
+    # plt.show()
+    plt.xlabel('Predictions')
+    plt.ylabel('Targets')
+    plt.savefig(
+        '/Users/nadineelnaggar/Google Drive/PhD/EXPT_LOGS/Counters/BracketCounting/Sigmoid_activation_2train_seq_length_random_initialisation_100epochs_CONFUSION_MATRIX TRAIN_RUN_'+str(i)+'.png')
+    plt.close()
+
+
+
+
+filename = '/Users/nadineelnaggar/Google Drive/PhD/EXPT_LOGS/Counters/BracketCounting/Sigmoid_activation_4train_seq_length_random_initialisation_100epochs_TRAIN LOG_RAW.txt'
+targets = []
+predictions = []
+
+with open(filename,'r') as f:
+    for line in f:
+        if 'rounded output ' in line:
+            predictions.append(line[-3:-2])
+        elif 'target ' in line:
+            targets.append(line[-3:-2])
+
+print(targets)
+print(predictions)
+conf2 = confusion_matrix(targets,predictions)
+heat=sns.heatmap(conf2, annot=True, xticklabels=['ZeroNeg', 'Pos'], yticklabels=['ZeroNeg', 'Pos'], cmap='Blues', cbar=False, fmt='d')
+bottom1, top1 = heat.get_ylim()
+heat.set_ylim(bottom1 + 0.5, top1 - 0.5)
+        # plt.show()
+plt.xlabel('Predictions')
+plt.ylabel('Targets')
+plt.savefig('/Users/nadineelnaggar/Google Drive/PhD/EXPT_LOGS/Counters/BracketCounting/Sigmoid_activation_4train_seq_length_random_initialisation_100epochs_CONFUSION_MATRIX TRAIN_ALL.png')
+plt.show()
+plt.close()
+
+print(len(targets))
+for i in range(10):
+    targets_per_run=targets[28*i:((28*(i+1)))]
+    predictions_per_run=predictions[28*i:((28*(i+1)))]
+    conf2 = confusion_matrix(targets_per_run, predictions_per_run)
+    heat = sns.heatmap(conf2, annot=True, xticklabels=['ZeroNeg', 'Pos'], yticklabels=['ZeroNeg', 'Pos'], cmap='Blues',
+                       cbar=False, fmt='d')
+    bottom1, top1 = heat.get_ylim()
+    heat.set_ylim(bottom1 + 0.5, top1 - 0.5)
+    # plt.show()
+    plt.xlabel('Predictions')
+    plt.ylabel('Targets')
+    plt.savefig(
+        '/Users/nadineelnaggar/Google Drive/PhD/EXPT_LOGS/Counters/BracketCounting/Sigmoid_activation_4train_seq_length_random_initialisation_100epochs_CONFUSION_MATRIX TRAIN_RUN_'+str(i)+'.png')
+    plt.close()
