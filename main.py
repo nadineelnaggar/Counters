@@ -576,7 +576,7 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
 
         if epoch==num_epochs-1:
             plt.subplots()
-            heat_train_val = sns.heatmap(train_val_conf, annot=True, cbar=False, xticklabels=labels, yticklabels=labels)
+            heat_train_val = sns.heatmap(train_val_conf, annot=True, cbar=False, xticklabels=labels, yticklabels=labels, cmap='Blues')
             bottom1, top1 = heat_train_val.get_ylim()
             heat_train_val.set_ylim(bottom1 + 0.5, top1 - 0.5)
             # plt.show()
@@ -608,7 +608,7 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
             print('num_correct = ',num_correct)
             print('Final training accuracy = ', num_correct / len(X) * 100, '%')
             # print('**************************************************************************\n')
-            heat_train = sns.heatmap(conf_matrix, annot=True, cbar=False, xticklabels=labels, yticklabels=labels)
+            heat_train = sns.heatmap(conf_matrix, annot=True, cbar=False, xticklabels=labels, yticklabels=labels, cmap='Blues')
             bottom1, top1 = heat_train.get_ylim()
             heat_train.set_ylim(bottom1 + 0.5, top1 - 0.5)
             # plt.show()
@@ -947,8 +947,8 @@ def test(model, X, X_notencoded, y, y_notencoded, dataset, run):
 
 
 
-        conf_matrix = sklearn.metrics.confusion_matrix(expected_classes, predicted_classes)
-    heat = sns.heatmap(conf_matrix, annot=True, cbar=False, xticklabels=labels, yticklabels=labels)
+    conf_matrix = sklearn.metrics.confusion_matrix(expected_classes, predicted_classes)
+    heat = sns.heatmap(conf_matrix, annot=True, cbar=False, xticklabels=labels, yticklabels=labels, cmap='Blues')
     bottom1, top1 = heat.get_ylim()
     heat.set_ylim(bottom1 + 0.5, top1 - 0.5)
     # plt.show()
