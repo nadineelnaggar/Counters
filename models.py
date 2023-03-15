@@ -179,3 +179,85 @@ class NonZeroReLUCounter(nn.Module):
 #     print('closing brackets = ',closing_brackets)
 #     print('excess closing brackets = ',excess_closing_brackets)
 #     print('**********************')
+
+
+
+class LinearBracketCounterWithAllBiases(nn.Module):
+    def __init__(self, counter_input_size, counter_output_size, output_size, initialisation='random',output_activation='Sigmoid'):
+        super(LinearBracketCounterWithAllBiases, self).__init__()
+        self.model_name='LinearBracketCounter'
+        self.counter = nn.Linear(counter_input_size,counter_output_size)
+        self.out = nn.Linear(counter_output_size,output_size)
+        self.output_activation = output_activation
+        if initialisation=='correct':
+            self.counter.weight =  nn.Parameter(torch.tensor([[1, -1, 1]], dtype=torch.float32))
+            self.counter.bias=nn.Parameter(torch.tensor([0],dtype=torch.float32))
+            self.out.weight = nn.Parameter(torch.tensor([[1]],dtype=torch.float32))
+            self.out.bias=nn.Parameter(torch.tensor([0],dtype=torch.float32))
+        self.sigmoid = nn.Sigmoid()
+        # self.clip = torch.clamp(min=0,max=1)
+
+    def forward(self, x, previous_count):
+        combined = torch.cat((x, previous_count))
+        x = self.counter(combined)
+        previous_count = x
+        x = self.out(x)
+        if self.output_activation=='Sigmoid':
+            x = self.sigmoid(x)
+        elif self.output_activation=='Clipping':
+            x = torch.clamp(x,min=0,max=1)
+        return x, previous_count
+
+
+class LinearBracketCounterWithCounterBias(nn.Module):
+    def __init__(self, counter_input_size, counter_output_size, output_size, initialisation='random',output_activation='Sigmoid'):
+        super(LinearBracketCounterWithCounterBias, self).__init__()
+        self.model_name='LinearBracketCounter'
+        self.counter = nn.Linear(counter_input_size,counter_output_size)
+        self.out = nn.Linear(counter_output_size,output_size, bias=False)
+        self.output_activation = output_activation
+        if initialisation=='correct':
+            self.counter.weight =  nn.Parameter(torch.tensor([[1, -1, 1]], dtype=torch.float32))
+            self.counter.bias = nn.Parameter(torch.tensor([0], dtype=torch.float32))
+            self.out.weight = nn.Parameter(torch.tensor([[1]],dtype=torch.float32))
+        self.sigmoid = nn.Sigmoid()
+        # self.clip = torch.clamp(min=0,max=1)
+
+    def forward(self, x, previous_count):
+        combined = torch.cat((x, previous_count))
+        x = self.counter(combined)
+        previous_count = x
+        x = self.out(x)
+        if self.output_activation=='Sigmoid':
+            x = self.sigmoid(x)
+        elif self.output_activation=='Clipping':
+            x = torch.clamp(x,min=0,max=1)
+        return x, previous_count
+
+
+class TernaryLinearBracketCounterWithBias(nn.Module):
+    def __init__(self, counter_input_size, counter_output_size, output_size, initialisation='random',output_activation='Softmax'):
+        super(TernaryLinearBracketCounter, self).__init__()
+        self.model_name='TernaryLinearBracketCounter'
+        self.counter = nn.Linear(counter_input_size,counter_output_size)
+        # self.out = nn.Linear(counter_output_size,output_size, bias=False)
+        self.out = nn.Linear(counter_output_size, output_size, bias=True)
+        self.output_activation = output_activation
+        if initialisation=='correct':
+            self.counter.weight =  nn.Parameter(torch.tensor([[1, -1, 1]], dtype=torch.float32))
+            self.counter.bias = nn.Parameter(torch.tensor([0], dtype=torch.float32))
+            self.out.weight = nn.Parameter(torch.tensor([[1]],dtype=torch.float32))
+        # self.sigmoid = nn.Sigmoid()
+        self.softmax = nn.Softmax(dim=0)
+
+    def forward(self, x, previous_count):
+        combined = torch.cat((x, previous_count))
+        x = self.counter(combined)
+        previous_count = x
+        x = self.out(x)
+        if self.output_activation=='Softmax':
+            x = self.softmax(x)
+            # print('x=',x)
+        elif self.output_activation=='Clipping':
+            x = torch.clamp(x,min=0,max=1)
+        return x, previous_count
