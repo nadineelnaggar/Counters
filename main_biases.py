@@ -402,11 +402,11 @@ X_50, y_50 = encode_dataset(X_50, y_50)
 
 
 def select_model():
-    if task == 'Dyck1Classification':
-        model = NonZeroReLUCounter(counter_input_size=counter_input_size, counter_output_size=counter_output_size,
-                                   output_size=output_size, initialisation=initialisation,
-                                   output_activation=output_activation)
-    elif task == 'BracketCounting':
+    # if task == 'Dyck1Classification':
+    #     model = NonZeroReLUCounter(counter_input_size=counter_input_size, counter_output_size=counter_output_size,
+    #                                output_size=output_size, initialisation=initialisation,
+    #                                output_activation=output_activation)
+    if task == 'BracketCounting':
         model = LinearBracketCounter(counter_input_size=counter_input_size, counter_output_size=counter_output_size,
                                      output_size=output_size, initialisation=initialisation,
                                      output_activation=output_activation)
@@ -415,16 +415,16 @@ def select_model():
                                             counter_output_size=counter_output_size,
                                             output_size=output_size, initialisation=initialisation,
                                             output_activation=output_activation)
-    elif task == 'BracketCountingWithBias':
-        model = LinearBracketCounterWithAllBiases(counter_input_size == counter_input_size,
-                                                  counter_input_size == counter_output_size, output_size=output_size,
-                                                  initialisation=initialisation, output_activation=output_activation)
-
-    elif task == 'TernaryBracketCountingWithBias':
-        model = TernaryLinearBracketCounterWithBias(counter_input_size=counter_input_size,
-                                                    counter_output_size=counter_output_size,
-                                                    output_size=output_size, initialisation=initialisation,
-                                                    output_activation=output_activation)
+    # elif task == 'BracketCountingWithBias':
+    #     model = LinearBracketCounterWithAllBiases(counter_input_size == counter_input_size,
+    #                                               counter_input_size == counter_output_size, output_size=output_size,
+    #                                               initialisation=initialisation, output_activation=output_activation)
+    #
+    # elif task == 'TernaryBracketCountingWithBias':
+    #     model = TernaryLinearBracketCounterWithBias(counter_input_size=counter_input_size,
+    #                                                 counter_output_size=counter_output_size,
+    #                                                 output_size=output_size, initialisation=initialisation,
+    #                                                 output_activation=output_activation)
     return model.to(device)
 
 
@@ -532,6 +532,10 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
                 elif model.model_name == 'TernaryLinearBracketCounter':
                     out, previous_state = model(X[i][j].squeeze().to(device), previous_state)
 
+            # if model.model_name == 'TernaryLinearBracketCounter':
+            #     out=out.unsqueeze(dim=0)
+            #     target_seq=target_seq.unsqueeze(dim=0)
+
                 # output_seq[j]=out
 
             if print_flag == True:
@@ -539,6 +543,11 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
                     f.write('////////////////////////////////////////\n')
                     f.write('input sentence = ' + str(X[i]) + '\n')
                     f.write('encoded sentence = ' + str(input_seq) + '\n')
+
+            # if model.model_name == 'TernaryLinearBracketCounter':
+            #     target_seq=target_seq.argmax(dim=0).unsqueeze(dim=0)
+            print('out = ',out)
+            print('target_seq = ',target_seq)
 
             loss = criterion(out, target_seq)
             total_loss += loss.item()
