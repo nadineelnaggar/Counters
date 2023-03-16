@@ -111,6 +111,9 @@ if task=='TernaryBracketCounting' or task=='TernaryBracketCountingWithBias':
 
 
 
+# with open(file_name,'w') as f:
+#     f.write('')
+
 with open(file_name,'w') as f:
     f.write('')
 
