@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sklearn
 import argparse
-from models import NonZeroReLUCounter,LinearBracketCounter, TernaryLinearBracketCounter, TernaryRegressionLinearBracketCounter, LinearBracketCounterWithAllBiases, TernaryLinearBracketCounterWithBias
+from models_bias import LinearBracketCounter, TernaryLinearBracketCounter
 import torch.optim as optim
 import pandas as pd
 import time
@@ -14,27 +14,30 @@ import seaborn as sns
 
 
 
+
+
+
+
 seed = 10
 torch.manual_seed(seed)
 np.random.seed(seed)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-
 parser = argparse.ArgumentParser()
-parser.add_argument('--model_name',type=str)
-parser.add_argument('--task',type=str,default='Dyck1Classification', help='Dyck1Classification or BracketCounting or TernaryBracketCounting')
-parser.add_argument('--train_seq_length',type=int,default=4, help='length of sequences in training set: 4, 8, 16')
+parser.add_argument('--model_name', type=str)
+parser.add_argument('--task', type=str, default='Dyck1Classification',
+                    help='Dyck1Classification or BracketCounting or TernaryBracketCounting')
+parser.add_argument('--train_seq_length', type=int, default=4, help='length of sequences in training set: 4, 8, 16')
 # parser.add_argument('--long_seq_length',type=int,default=30,help='length of sequences in long test set (20,30,40,50 tokens)')
-parser.add_argument('--runtime',type=str,default='colab',help='colab or local')
-parser.add_argument('--num_epochs',type=int)
-parser.add_argument('--output_activation',type=str,default='Sigmoid',help='Sigmoid or Clipping or Softmax')
-parser.add_argument('--initialisation',type=str,default='random',help='random or correct')
-parser.add_argument('--oversampling',type=str,default='OversampledDataset', help='OversampledDataset or NonOversampledDataset')
-
+parser.add_argument('--runtime', type=str, default='colab', help='colab or local')
+parser.add_argument('--num_epochs', type=int)
+parser.add_argument('--output_activation', type=str, default='Sigmoid', help='Sigmoid or Clipping or Softmax')
+parser.add_argument('--initialisation', type=str, default='random', help='random or correct')
+parser.add_argument('--oversampling', type=str, default='OversampledDataset',
+                    help='OversampledDataset or NonOversampledDataset')
 
 args = parser.parse_args()
-
 
 model_name = args.model_name
 train_seq_length = args.train_seq_length
@@ -43,61 +46,58 @@ runtime = args.runtime
 num_epochs = args.num_epochs
 output_activation = args.output_activation
 task = args.task
-initialisation=args.initialisation
+initialisation = args.initialisation
 oversampling = args.oversampling
 
 # num_epochs = 50
 num_runs = 10
 learning_rate = 0.005
-checkpoint_step=1
+checkpoint_step = 1
 
-use_optimiser='Adam'
+use_optimiser = 'Adam'
 
-if task=='Dyck1Classification':
-    labels = ['valid','invalid']
-elif task=='BracketCounting' or task=='BracketCountingWithBias':
+if task == 'Dyck1Classification':
+    labels = ['valid', 'invalid']
+elif task == 'BracketCounting' or task == 'BracketCountingWithBias':
     labels = ['ZeroNeg', 'Pos']
-elif task=='TernaryBracketCounting' or task=='TenaryBracketCountingWithBias':
-    labels=['Neg', 'Zero', 'Pos']
+elif task == 'TernaryBracketCounting' or task == 'TenaryBracketCountingWithBias':
+    labels = ['Neg', 'Zero', 'Pos']
+
 
 def classFromOutput(output):
-
-    if task=='Dyck1Classification' or task=='BracketCounting' or task=='BracketCountingWithBias':
+    if task == 'Dyck1Classification' or task == 'BracketCounting' or task == 'BracketClassificationWithBias':
         if output.item() > 0.5:
             category_i = 1
         else:
             category_i = 0
-    elif task == 'TernaryBracketCounting' or task=='TernaryBracketCountingWithBias':
+    elif task == 'TernaryBracketCounting' or task == 'TernaryClassificationWithBias':
         top_n, top_i = output.topk(1)
         category_i = top_i[0].item()
         # return labels[category_i], category_i
     return labels[category_i], category_i
 
 
+if runtime == 'local':
+    path = "/Users/nadineelnaggar/Google Drive/PhD/EXPT_LOGS/Counters/" + str(task) + "WithBias/"
+elif runtime == 'colab':
+    path = "/content/drive/MyDrive/PhD/EXPT_LOGS/Counters/" + str(task) + "WithBias/"
 
+prefix = path + output_activation + "_activation_" + str(
+    train_seq_length) + 'train_seq_length_' + initialisation + "_initialisation_" + str(
+    num_epochs) + "epochs" + "_" + oversampling
 
-if runtime=='local':
-    path = "/Users/nadineelnaggar/Google Drive/PhD/EXPT_LOGS/Counters/"+str(task)+"/"
-elif runtime=='colab':
-    path = "/content/drive/MyDrive/PhD/EXPT_LOGS/Counters/"+str(task)+"/"
-
-
-prefix = path+output_activation+"_activation_"+str(train_seq_length)+'train_seq_length_'+initialisation+"_initialisation_"+str(num_epochs)+"epochs"+"_"+oversampling
-
-file_name = prefix+'.txt'
-train_log = prefix+'_TRAIN LOG.txt'
-train_log_raw = prefix+'_TRAIN LOG_RAW.txt'
-test_20_log = prefix+'_TEST_LOG 20_TOKENS.txt'
-test_30_log = prefix+'_TEST_LOG 30_TOKENS.txt'
-test_40_log = prefix+'_TEST_LOG 40_TOKENS.txt'
-test_50_log = prefix+'_TEST_LOG 50_TOKENS.txt'
-excel_name = prefix+'.xlsx'
-modelname = prefix+"_MODEL_"
-optimname = prefix+"_OPTIMISER_"
-checkpoint = prefix+'_CHECKPOINT_'
-plt_name = prefix+'_PLOT_'
-
-
+file_name = prefix + '.txt'
+train_log = prefix + '_TRAIN LOG.txt'
+train_log_raw = prefix + '_TRAIN LOG_RAW.txt'
+test_20_log = prefix + '_TEST_LOG 20_TOKENS.txt'
+test_30_log = prefix + '_TEST_LOG 30_TOKENS.txt'
+test_40_log = prefix + '_TEST_LOG 40_TOKENS.txt'
+test_50_log = prefix + '_TEST_LOG 50_TOKENS.txt'
+excel_name = prefix + '.xlsx'
+modelname = prefix + "_MODEL_"
+optimname = prefix + "_OPTIMISER_"
+checkpoint = prefix + '_CHECKPOINT_'
+plt_name = prefix + '_PLOT_'
 
 input_size = 2
 output_size = 1
@@ -105,105 +105,103 @@ hidden_size = 2
 counter_input_size = 3
 counter_output_size = 1
 vocab = ['(', ')']
-if task=='TernaryBracketCounting' or task=='TernaryBracketCountingWithBias':
-    output_size=3
-
-
-
+if task == 'TernaryBracketCounting' or task == 'TernaryBracketCountingWithBias':
+    output_size = 3
 
 # with open(file_name,'w') as f:
 #     f.write('')
 
-with open(file_name,'w') as f:
+with open(file_name, 'w') as f:
     f.write('')
 
-with open(train_log,'w') as f:
+with open(train_log, 'w') as f:
     f.write('')
 
-with open(train_log_raw,'w') as f:
+with open(train_log_raw, 'w') as f:
     f.write('')
 
-with open(test_20_log,'w') as f:
+with open(test_20_log, 'w') as f:
     f.write('')
 
-with open(test_30_log,'w') as f:
+with open(test_30_log, 'w') as f:
     f.write('')
 
-with open(test_40_log,'w') as f:
+with open(test_40_log, 'w') as f:
     f.write('')
 
-with open(test_50_log,'w') as f:
+with open(test_50_log, 'w') as f:
     f.write('')
 
 num_classes = 2
 n_letters = 2
 
-if task=='TernaryBracketCounting' or task=='TernaryBracketCountingWithBias':
-    num_classes=3
+if task == 'TernaryBracketCounting' or task == 'TernaryClassificationWithBias':
+    num_classes = 3
+
 
 def read_datasets():
     x = []
     y = []
-    if train_seq_length==2:
-        if model_name=='NonZeroReLUCounter':
+    if train_seq_length == 2:
+        if model_name == 'NonZeroReLUCounter':
             read_file = 'Dyck1Dataset2Tokens.txt'
-        elif model_name=='LinearBracketCounter' and oversampling=='OversampledDataset':
+        elif model_name == 'LinearBracketCounter' and oversampling == 'OversampledDataset':
             read_file = 'CounterDataset2Tokens.txt'
-        elif model_name=='LinearBracketCounter' and oversampling=='NonOversampledDataset':
+        elif model_name == 'LinearBracketCounter' and oversampling == 'NonOversampledDataset':
             read_file = 'CounterDataset2TokensNoOversampling.txt'
-        elif model_name=='TernaryLinearBracketCounter' and oversampling=='NonOversampledDataset':
+        elif model_name == 'TernaryLinearBracketCounter' and oversampling == 'NonOversampledDataset':
             read_file = 'CounterDataset2TokensTernaryNoOversampling.txt'
-        elif model_name=='TernaryLinearBracketCounter' and oversampling=='OversampledDataset':
+        elif model_name == 'TernaryLinearBracketCounter' and oversampling == 'OversampledDataset':
             read_file = 'CounterDataset2TokensTernaryOversampledDataset.txt'
-        elif model_name=='LinearBracketCounterWithBiases' and oversampling=='OversampledDataset':
+        elif model_name == 'LinearBracketCounterWithBiases' and oversampling == 'OversampledDataset':
             read_file = 'CounterDataset2Tokens.txt'
-        elif model_name=='TernaryLinearBracketCounterWithBias' and oversampling=='OversampledDataset':
+        elif model_name == 'TernaryLinearBracketCounterWithBias' and oversampling == 'OversampledDataset':
             read_file = 'CounterDataset2TokensTernaryOversampledDataset.txt'
-        elif model_name=='TernaryLinearBracketCounterWithBias' and oversampling=='NonOversampledDataset':
+        elif model_name == 'TernaryLinearBracketCounterWithBias' and oversampling == 'NonOversampledDataset':
             read_file = 'CounterDataset2TokensTernaryNoOversampling.txt'
-        elif model_name=='LinearBracketCounterWithBiases' and oversampling=='NonOversampledDataset':
+        elif model_name == 'LinearBracketCounterWithBiases' and oversampling == 'NonOversampledDataset':
             read_file = 'CounterDataset2TokensNoOversampling.txt'
-    elif train_seq_length==4:
-        if model_name=='NonZeroReLUCounter':
+    elif train_seq_length == 4:
+        if model_name == 'NonZeroReLUCounter':
             read_file = 'Dyck1Dataset4Tokens.txt'
-        elif model_name=='LinearBracketCounter' and oversampling=='OversampledDataset':
+        elif model_name == 'LinearBracketCounter' and oversampling == 'OversampledDataset':
             read_file = 'CounterDataset4Tokens.txt'
-        elif model_name=='LinearBracketCounter' and oversampling=='NonOversampledDataset':
+        elif model_name == 'LinearBracketCounter' and oversampling == 'NonOversampledDataset':
             read_file = 'CounterDataset4TokensNoOversampling.txt'
-        elif model_name=='TernaryLinearBracketCounter' and oversampling=='NonOversampledDataset':
+        elif model_name == 'TernaryLinearBracketCounter' and oversampling == 'NonOversampledDataset':
             read_file = 'CounterDataset4TokensTernaryNoOversampling.txt'
-        elif model_name=='TernaryLinearBracketCounter' and oversampling=='OversampledDataset':
+        elif model_name == 'TernaryLinearBracketCounter' and oversampling == 'OversampledDataset':
             read_file = 'CounterDataset4TokensTernaryOversampledDataset.txt'
-        
-        elif model_name=='LinearBracketCounterWithBiases' and oversampling=='OversampledDataset':
+
+        elif model_name == 'LinearBracketCounterWithBiases' and oversampling == 'OversampledDataset':
             read_file = 'CounterDataset4Tokens.txt'
-        elif model_name=='TernaryLinearBracketCounterWithBias' and oversampling=='OversampledDataset':
+        elif model_name == 'TernaryLinearBracketCounterWithBias' and oversampling == 'OversampledDataset':
             read_file = 'CounterDataset4TokensTernaryOversampledDataset.txt'
-        elif model_name=='TernaryLinearBracketCounterWithBias' and oversampling=='NonOversampledDataset':
+        elif model_name == 'TernaryLinearBracketCounterWithBias' and oversampling == 'NonOversampledDataset':
             read_file = 'CounterDataset4TokensTernaryNoOversampling.txt'
-        elif model_name=='LinearBracketCounterWithBiases' and oversampling=='NonOversampledDataset':
+        elif model_name == 'LinearBracketCounterWithBiases' and oversampling == 'NonOversampledDataset':
             read_file = 'CounterDataset4TokensNoOversampling.txt'
-    elif train_seq_length==8:
-        if model_name=='NonZeroReLUCounter':
+    elif train_seq_length == 8:
+        if model_name == 'NonZeroReLUCounter':
             read_file = 'Dyck1Dataset8Tokens.txt'
-        elif model_name=='LinearBracketCounter' and oversampling=='OversampledDataset':
+        elif model_name == 'LinearBracketCounter' and oversampling == 'OversampledDataset':
             read_file = 'CounterDataset8Tokens.txt'
-        elif model_name=='LinearBracketCounter' and oversampling=='NonOversampledDataset':
+        elif model_name == 'LinearBracketCounter' and oversampling == 'NonOversampledDataset':
             read_file = 'CounterDataset8TokensNoOversampling.txt'
-        elif model_name=='TernaryLinearBracketCounter' and oversampling=='NonOversampledDataset':
+        elif model_name == 'TernaryLinearBracketCounter' and oversampling == 'NonOversampledDataset':
             read_file = 'CounterDataset8TokensTernaryNoOversampling.txt'
-        elif model_name=='TernaryLinearBracketCounter' and oversampling=='OversampledDataset':
+        elif model_name == 'TernaryLinearBracketCounter' and oversampling == 'OversampledDataset':
             read_file = 'CounterDataset8TokensTernaryOversampledDataset.txt'
-        
-        elif model_name=='LinearBracketCounterWithBiases' and oversampling=='OversampledDataset':
+
+        elif model_name == 'LinearBracketCounterWithBiases' and oversampling == 'OversampledDataset':
             read_file = 'CounterDataset8Tokens.txt'
-        elif model_name=='TernaryLinearBracketCounterWithBias' and oversampling=='OversampledDataset':
+        elif model_name == 'TernaryLinearBracketCounterWithBias' and oversampling == 'OversampledDataset':
             read_file = 'CounterDataset8TokensTernaryOversampledDataset.txt'
-        elif model_name=='TernaryLinearBracketCounterWithBias' and oversampling=='NonOversampledDataset':
+        elif model_name == 'TernaryLinearBracketCounterWithBias' and oversampling == 'NonOversampledDataset':
             read_file = 'CounterDataset8TokensTernaryNoOversampling.txt'
-        elif model_name=='LinearBracketCounterWithBiases' and oversampling=='NonOversampledDataset':
+        elif model_name == 'LinearBracketCounterWithBiases' and oversampling == 'NonOversampledDataset':
             read_file = 'CounterDataset8TokensNoOversampling.txt'
-            
+
     elif train_seq_length == 16:
         # if model_name == 'NonZeroReLUCounter':
         #     read_file = 'Dyck1Dataset8Tokens.txt'
@@ -212,9 +210,9 @@ def read_datasets():
             read_file = 'CounterDataset16Tokens.txt'
         elif model_name == 'LinearBracketCounter' and oversampling == 'NonOversampledDataset':
             read_file = 'CounterDataset16TokensNoOversampling.txt'
-        elif model_name=='TernaryLinearBracketCounter' and oversampling=='NonOversampledDataset':
+        elif model_name == 'TernaryLinearBracketCounter' and oversampling == 'NonOversampledDataset':
             read_file = 'CounterDataset16TokensTernaryNoOversampling.txt'
-        elif model_name=='TernaryLinearBracketCounter' and oversampling=='OversampledDataset':
+        elif model_name == 'TernaryLinearBracketCounter' and oversampling == 'OversampledDataset':
             read_file = 'CounterDataset16TokensTernary.txt'
 
     with open(read_file, 'r') as f:
@@ -234,7 +232,7 @@ def read_datasets():
     x_50 = []
     y_50 = []
 
-    if model_name=='NonZeroReLUCounter':
+    if model_name == 'NonZeroReLUCounter':
         with open('Dyck1Dataset20Tokens.txt', 'r') as f:
             for line in f:
                 line = line.split(",")
@@ -266,7 +264,7 @@ def read_datasets():
                 x_50.append(sentence)
                 y_50.append(label)
 
-    elif model_name == 'LinearBracketCounter' or model_name=='LinearBracketCounterWithBiases':
+    elif model_name == 'LinearBracketCounter' or model_name == 'LinearBracketCounterWithBiases':
         with open('CounterDataset20Tokens.txt', 'r') as f:
             for line in f:
                 line = line.split(",")
@@ -297,7 +295,7 @@ def read_datasets():
                 label = line[1].strip()
                 x_50.append(sentence)
                 y_50.append(label)
-    elif model_name == 'TernaryLinearBracketCounter' or model_name=='TernaryBracketCounterWithBias':
+    elif model_name == 'TernaryLinearBracketCounter' or model_name == 'TernaryBracketCounterWithBias':
         with open('CounterDataset20TokensTernaryOversampledDataset.txt', 'r') as f:
             for line in f:
                 line = line.split(",")
@@ -329,8 +327,8 @@ def read_datasets():
                 x_50.append(sentence)
                 y_50.append(label)
 
-
     return x, y, x_20, y_20, x_30, y_30, x_40, y_40, x_50, y_50
+
 
 #
 # def encode_sentence(sentence):
@@ -345,16 +343,14 @@ def read_datasets():
 #     return rep
 
 def encode_sentence(sentence):
-
-    rep = torch.zeros(len(sentence),1,n_letters)
-
-
+    rep = torch.zeros(len(sentence), 1, n_letters)
 
     for index, char in enumerate(sentence):
         pos = vocab.index(char)
-        rep[index][0][pos]=1
+        rep[index][0][pos] = 1
     rep.requires_grad_(True)
     return rep
+
 
 # def encode_labels(label):
 #     # return torch.tensor(labels.index(label), dtype=torch.float32)
@@ -364,12 +360,13 @@ def encode_sentence(sentence):
 #         return torch.tensor(1,dtype=torch.float32)
 
 def encode_labels(label):
-    if task=='TernaryBracketCounting' or task=='TernaryBracketCountingWithBias':
+    if task == 'TernaryBracketCounting' or task == 'TernaryBracketCountingWithBias':
         outt = torch.zeros((len(labels)))
-        outt[labels.index(label)]=1
+        outt[labels.index(label)] = 1
         return outt
     else:
         return torch.tensor([labels.index(label)], dtype=torch.float32)
+
 
 def encode_dataset(sentences, labels):
     encoded_sentences = []
@@ -405,23 +402,31 @@ X_50, y_50 = encode_dataset(X_50, y_50)
 
 
 def select_model():
-    if task=='Dyck1Classification':
-        model = NonZeroReLUCounter(counter_input_size=counter_input_size,counter_output_size=counter_output_size,output_size=output_size, initialisation=initialisation, output_activation=output_activation)
-    elif task=='BracketCounting':
-        model = LinearBracketCounter(counter_input_size=counter_input_size,counter_output_size=counter_output_size,output_size=output_size, initialisation=initialisation, output_activation=output_activation)
-    elif task == 'TernaryBracketCounting':
-        model = TernaryLinearBracketCounter(counter_input_size=counter_input_size, counter_output_size=counter_output_size,
+    if task == 'Dyck1Classification':
+        model = NonZeroReLUCounter(counter_input_size=counter_input_size, counter_output_size=counter_output_size,
+                                   output_size=output_size, initialisation=initialisation,
+                                   output_activation=output_activation)
+    elif task == 'BracketCounting':
+        model = LinearBracketCounter(counter_input_size=counter_input_size, counter_output_size=counter_output_size,
                                      output_size=output_size, initialisation=initialisation,
                                      output_activation=output_activation)
-    elif task=='BracketCountingWithBias':
-        model=LinearBracketCounterWithAllBiases(counter_input_size==counter_input_size, counter_input_size==counter_output_size, output_size=output_size, initialisation=initialisation, output_activation=output_activation)
-
-    elif task=='TernaryBracketCountingWithBias':
-        model = TernaryLinearBracketCounterWithBias(counter_input_size=counter_input_size,
+    elif task == 'TernaryBracketCounting':
+        model = TernaryLinearBracketCounter(counter_input_size=counter_input_size,
                                             counter_output_size=counter_output_size,
                                             output_size=output_size, initialisation=initialisation,
                                             output_activation=output_activation)
+    elif task == 'BracketCountingWithBias':
+        model = LinearBracketCounterWithAllBiases(counter_input_size == counter_input_size,
+                                                  counter_input_size == counter_output_size, output_size=output_size,
+                                                  initialisation=initialisation, output_activation=output_activation)
+
+    elif task == 'TernaryBracketCountingWithBias':
+        model = TernaryLinearBracketCounterWithBias(counter_input_size=counter_input_size,
+                                                    counter_output_size=counter_output_size,
+                                                    output_size=output_size, initialisation=initialisation,
+                                                    output_activation=output_activation)
     return model.to(device)
+
 
 def asMinutes(s):
     m = math.floor(s / 60)
@@ -440,16 +445,15 @@ def timeSince(since, percent):
 
 
 def train(model, X, X_notencoded, y, y_notencoded, run=0):
-
     start = time.time()
 
     # criterion = nn.MSELoss()
-    if output_activation=='Sigmoid':
+    if output_activation == 'Sigmoid':
         criterion = nn.BCELoss()
-    elif output_activation=='Clipping':
-        criterion=nn.MSELoss()
-    elif output_activation=='Softmax':
-        criterion=nn.CrossEntropyLoss()
+    elif output_activation == 'Clipping':
+        criterion = nn.MSELoss()
+    elif output_activation == 'Softmax':
+        criterion = nn.CrossEntropyLoss()
         # criterion = nn.MSELoss()
     # learning_rate = args.learning_rate
     # optimiser = optim.Adam(model.parameters(), lr=learning_rate)
@@ -469,15 +473,12 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
     train_val_accuracies = []
     train_val_losses = []
 
-
     print(model)
     num_timesteps = 0
 
     for elem in X:
-        num_timesteps+=len(elem)
-    print('num_timesteps = ',num_timesteps)
-
-
+        num_timesteps += len(elem)
+    print('num_timesteps = ', num_timesteps)
 
     for epoch in range(num_epochs):
         model.train()
@@ -490,8 +491,8 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
         epoch_incorrect_guesses = []
         epoch_correct_guesses = []
         epochs.append(epoch)
-        if epoch==num_epochs-1:
-            print_flag=True
+        if epoch == num_epochs - 1:
+            print_flag = True
         if print_flag == True:
             with open(train_log_raw, 'a') as f:
                 f.write('\nEPOCH ' + str(epoch) + '\n')
@@ -515,20 +516,20 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
             class_category = y_notencoded[i]
 
             # hidden = model.init_hidden()
-            if model.model_name=='LinearBracketCounter' or model.model_name=='TernaryLinearBracketCounter':
-                previous_state = torch.tensor([0],dtype=torch.float32)
-            elif model.model_name=='NonZeroReLUCounter':
-                opening_brackets = torch.tensor([0],dtype=torch.float32)
-                closing_brackets = torch.tensor([0],dtype=torch.float32)
-                excess_closing_brackets = torch.tensor([0],dtype=torch.float32)
-
+            if model.model_name == 'LinearBracketCounter' or model.model_name == 'TernaryLinearBracketCounter':
+                previous_state = torch.tensor([0], dtype=torch.float32)
+            elif model.model_name == 'NonZeroReLUCounter':
+                opening_brackets = torch.tensor([0], dtype=torch.float32)
+                closing_brackets = torch.tensor([0], dtype=torch.float32)
+                excess_closing_brackets = torch.tensor([0], dtype=torch.float32)
 
             for j in range(len_seq):
-                if model.model_name=='LinearBracketCounter':
+                if model.model_name == 'LinearBracketCounter':
                     out, previous_state = model(X[i][j].squeeze().to(device), previous_state)
-                elif model.model_name=='NonZeroReLUCounter':
-                    out, opening_brackets,closing_brackets,excess_closing_brackets = model(X[i][j].squeeze().to(device),opening_brackets,closing_brackets,excess_closing_brackets)
-                elif model.model_name=='TernaryLinearBracketCounter':
+                elif model.model_name == 'NonZeroReLUCounter':
+                    out, opening_brackets, closing_brackets, excess_closing_brackets = model(
+                        X[i][j].squeeze().to(device), opening_brackets, closing_brackets, excess_closing_brackets)
+                elif model.model_name == 'TernaryLinearBracketCounter':
                     out, previous_state = model(X[i][j].squeeze().to(device), previous_state)
 
                 # output_seq[j]=out
@@ -537,7 +538,7 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
                 with open(train_log_raw, 'a') as f:
                     f.write('////////////////////////////////////////\n')
                     f.write('input sentence = ' + str(X[i]) + '\n')
-                    f.write('encoded sentence = '+str(input_seq)+'\n')
+                    f.write('encoded sentence = ' + str(input_seq) + '\n')
 
             loss = criterion(out, target_seq)
             total_loss += loss.item()
@@ -600,26 +601,25 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
             #         with open(train_log, 'a') as f:
             #             f.write('INCORRECT' + '\n')
 
-
-
-        accuracy = num_correct/len(X)*100
+        accuracy = num_correct / len(X) * 100
         # print('Accuracy for epoch ', epoch, '=', accuracy, '%')
         time_mins, time_secs = timeSince(start, epoch + 1 / num_epochs * 100)
-        losses.append(total_loss/len(X))
+        losses.append(total_loss / len(X))
 
         train_val_acc, train_val_loss, train_val_conf = validate(model, X, X_notencoded, y, y_notencoded, criterion)
         train_val_accuracies.append(train_val_acc)
         train_val_losses.append(train_val_loss)
 
-        if epoch==num_epochs-1:
+        if epoch == num_epochs - 1:
             plt.subplots()
-            heat_train_val = sns.heatmap(train_val_conf, annot=True, cbar=False, xticklabels=labels, yticklabels=labels, cmap='Blues')
+            heat_train_val = sns.heatmap(train_val_conf, annot=True, cbar=False, xticklabels=labels, yticklabels=labels,
+                                         cmap='Blues')
             bottom1, top1 = heat_train_val.get_ylim()
             heat_train_val.set_ylim(bottom1 + 0.5, top1 - 0.5)
             # plt.show()
             plt.xlabel('Predictions')
             plt.ylabel('Targets')
-            plt.savefig(prefix+'_run_'+str(run)+'_CONFUSION_MATRIX_TRAIN_VAL.png')
+            plt.savefig(prefix + '_run_' + str(run) + '_CONFUSION_MATRIX_TRAIN_VAL.png')
             plt.close()
         with open(train_log, 'a') as f:
             f.write('Accuracy for epoch ' + str(epoch) + '=' + str(round(accuracy, 2)) + '%, avg train loss = ' +
@@ -638,14 +638,13 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
         conf_matrix = sklearn.metrics.confusion_matrix(expected_classes, predicted_classes)
         confusion_matrices.append(conf_matrix)
 
-
-
         if epoch == num_epochs - 1:
             # print('\n////////////////////////////////////////////////////////////////////////////////////////\n')
-            print('num_correct = ',num_correct)
+            print('num_correct = ', num_correct)
             print('Final training accuracy = ', num_correct / len(X) * 100, '%')
             # print('**************************************************************************\n')
-            heat_train = sns.heatmap(conf_matrix, annot=True, cbar=False, xticklabels=labels, yticklabels=labels, cmap='Blues')
+            heat_train = sns.heatmap(conf_matrix, annot=True, cbar=False, xticklabels=labels, yticklabels=labels,
+                                     cmap='Blues')
             bottom1, top1 = heat_train.get_ylim()
             heat_train.set_ylim(bottom1 + 0.5, top1 - 0.5)
             # plt.show()
@@ -654,20 +653,18 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
             plt.savefig(prefix + '_run_' + str(run) + '_CONFUSION_MATRIX_TRAIN.png')
             plt.close()
 
-
-
-        if epoch%checkpoint_step==0:
-            checkpoint_path = checkpoint+'run'+str(run)+"_epoch"+str(epoch)+".pth"
-            torch.save({'run':run,
-                        'epoch':epoch,
-                        'model_state_dict':model.state_dict(),
-                        'optimiser_state_dict':optimiser.state_dict(),
-                        'loss':loss},checkpoint_path)
-            checkpoint_loss_plot = modelname+'run'+str(run)+'_epoch'+str(epoch)+'_losses.png'
-            checkpoint_accuracy_plot = modelname+'run'+str(run)+'_epoch'+str(epoch)+'_accuracies.png'
-            checkpoint_lr_plot = modelname+'run'+str(run)+'_epoch'+str(epoch)+'_lrs.png'
+        if epoch % checkpoint_step == 0:
+            checkpoint_path = checkpoint + 'run' + str(run) + "_epoch" + str(epoch) + ".pth"
+            torch.save({'run': run,
+                        'epoch': epoch,
+                        'model_state_dict': model.state_dict(),
+                        'optimiser_state_dict': optimiser.state_dict(),
+                        'loss': loss}, checkpoint_path)
+            checkpoint_loss_plot = modelname + 'run' + str(run) + '_epoch' + str(epoch) + '_losses.png'
+            checkpoint_accuracy_plot = modelname + 'run' + str(run) + '_epoch' + str(epoch) + '_accuracies.png'
+            checkpoint_lr_plot = modelname + 'run' + str(run) + '_epoch' + str(epoch) + '_lrs.png'
             fig_loss, ax_loss = plt.subplots()
-            plt.plot(epochs,losses, label='avg train loss')
+            plt.plot(epochs, losses, label='avg train loss')
             # plt.plot(epochs,validation_losses, label='avg validation loss')
             # plt.plot(long_validation_losses, label='avg long validation loss')
             plt.xlabel('Epoch')
@@ -700,8 +697,6 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
     # print('len epochs = ',len(epochs))
     # print('len losses = ',len(losses))
 
-
-
     df1['epoch'] = epochs
     df1['Training accuracies'] = accuracies
     df1['Average training losses'] = losses
@@ -729,9 +724,10 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
     torch.save(model.state_dict(), mdl)
     torch.save(optimiser.state_dict(), optm)
 
-        # print(accuracies)
-        # print(accuracy)
+    # print(accuracies)
+    # print(accuracy)
     return accuracy, df1
+
 
 def validate(model, X, X_notencoded, y, y_notencoded, criterion):
     model.eval()
@@ -745,9 +741,7 @@ def validate(model, X, X_notencoded, y, y_notencoded, criterion):
     # elif dataset=='test_50':
     #     log_file=test_50_log
 
-
     num_samples = len(X)
-
 
     # print(model)
 
@@ -756,7 +750,6 @@ def validate(model, X, X_notencoded, y, y_notencoded, criterion):
     predicted_classes = []
     expected_classes = []
     total_loss = 0
-
 
     for i in range(len(X)):
         # model.zero_grad()
@@ -778,7 +771,7 @@ def validate(model, X, X_notencoded, y, y_notencoded, criterion):
         class_category = y_notencoded[i]
 
         # hidden = model.init_hidden()
-        if model.model_name == 'LinearBracketCounter' or model.model_name=='TernaryLinearBracketCounter':
+        if model.model_name == 'LinearBracketCounter' or model.model_name == 'TernaryLinearBracketCounter':
             previous_state = torch.tensor([0], dtype=torch.float32)
         elif model.model_name == 'NonZeroReLUCounter':
             opening_brackets = torch.tensor([0], dtype=torch.float32)
@@ -789,20 +782,19 @@ def validate(model, X, X_notencoded, y, y_notencoded, criterion):
             if model.model_name == 'LinearBracketCounter':
                 out, previous_state = model(X[i][j].squeeze().to(device), previous_state)
             elif model.model_name == 'NonZeroReLUCounter':
-                out, opening_brackets, closing_brackets, excess_closing_brackets = model(X[i][j].squeeze().to(device), opening_brackets, closing_brackets, excess_closing_brackets)
+                out, opening_brackets, closing_brackets, excess_closing_brackets = model(X[i][j].squeeze().to(device),
+                                                                                         opening_brackets,
+                                                                                         closing_brackets,
+                                                                                         excess_closing_brackets)
             elif model.model_name == 'TernaryLinearBracketCounter':
                 out, previous_state = model(X[i][j].squeeze().to(device), previous_state)
 
             # output_seq[j]=out
 
-
         # with open(log_file, 'a') as f:
         #     f.write('////////////////////////////////////////\n')
         #     f.write('input sentence = ' + str(X[i]) + '\n')
         #     f.write('encoded sentence = ' + str(input_seq) + '\n')
-
-
-
 
         # with open(log_file, 'a') as f:
         #     f.write('actual output in train function = ' + str(out) + '\n')
@@ -810,7 +802,7 @@ def validate(model, X, X_notencoded, y, y_notencoded, criterion):
         out_np = np.int_(out.detach().cpu().numpy() > 0.5)
         target_np = np.int_(target_seq.detach().cpu().numpy())
 
-        total_loss+=criterion(out, y[i]).item()
+        total_loss += criterion(out, y[i]).item()
 
         guess, guess_i = classFromOutput(out)
         class_i = labels.index(class_category)
@@ -828,59 +820,48 @@ def validate(model, X, X_notencoded, y, y_notencoded, criterion):
         #     with open(log_file, 'a') as f:
         #         f.write('INCORRECT' + '\n')
 
-
         # with open(log_file, 'a') as f:
         #     f.write('rounded output function = ' + str(out_np) + '\n')
         #     f.write('target = ' + str(target_np) + '\n')
 
-            #
-            #
-            # if np.all(np.equal(out_np, target_np)) and (out_np.flatten() == target_np.flatten()).all():
-            #     num_correct += 1
-            #     # correct_arr.append(X[i])
-            #     epoch_correct_guesses.append(X[i])
-            #     if print_flag == True:
-            #         with open(train_log, 'a') as f:
-            #             f.write('CORRECT' + '\n')
-            # else:
-            #     epoch_incorrect_guesses.append(X[i])
-            #     if print_flag == True:
-            #         with open(train_log, 'a') as f:
-            #             f.write('INCORRECT' + '\n')
+        #
+        #
+        # if np.all(np.equal(out_np, target_np)) and (out_np.flatten() == target_np.flatten()).all():
+        #     num_correct += 1
+        #     # correct_arr.append(X[i])
+        #     epoch_correct_guesses.append(X[i])
+        #     if print_flag == True:
+        #         with open(train_log, 'a') as f:
+        #             f.write('CORRECT' + '\n')
+        # else:
+        #     epoch_incorrect_guesses.append(X[i])
+        #     if print_flag == True:
+        #         with open(train_log, 'a') as f:
+        #             f.write('INCORRECT' + '\n')
 
         accuracy = num_correct / len(X) * 100
         # print('Accuracy for epoch ', epoch, '=', accuracy, '%')
 
-
-
-
         conf_matrix = sklearn.metrics.confusion_matrix(expected_classes, predicted_classes)
-
-
-
-
 
     # print(accuracies)
     # print(accuracy)
-    return accuracy, total_loss/len(X), confusion
-
+    return accuracy, total_loss / len(X), confusion
 
 
 def test(model, X, X_notencoded, y, y_notencoded, dataset, run):
     model.eval()
 
-    if dataset=='test_20':
+    if dataset == 'test_20':
         log_file = test_20_log
-    elif dataset=='test_30':
-        log_file=test_30_log
-    elif dataset=='test_40':
+    elif dataset == 'test_30':
+        log_file = test_30_log
+    elif dataset == 'test_40':
         log_file = test_40_log
-    elif dataset=='test_50':
-        log_file=test_50_log
-
+    elif dataset == 'test_50':
+        log_file = test_50_log
 
     num_samples = len(X)
-
 
     print(model)
 
@@ -888,7 +869,6 @@ def test(model, X, X_notencoded, y, y_notencoded, dataset, run):
     confusion = torch.zeros(num_classes, num_classes)
     predicted_classes = []
     expected_classes = []
-
 
     for i in range(len(X)):
         # model.zero_grad()
@@ -910,7 +890,7 @@ def test(model, X, X_notencoded, y, y_notencoded, dataset, run):
         class_category = y_notencoded[i]
 
         # hidden = model.init_hidden()
-        if model.model_name == 'LinearBracketCounter' or model.model_name=='TernaryLinearBracketCounter':
+        if model.model_name == 'LinearBracketCounter' or model.model_name == 'TernaryLinearBracketCounter':
             previous_state = torch.tensor([0], dtype=torch.float32)
         elif model.model_name == 'NonZeroReLUCounter':
             opening_brackets = torch.tensor([0], dtype=torch.float32)
@@ -921,20 +901,19 @@ def test(model, X, X_notencoded, y, y_notencoded, dataset, run):
             if model.model_name == 'LinearBracketCounter':
                 out, previous_state = model(X[i][j].squeeze().to(device), previous_state)
             elif model.model_name == 'NonZeroReLUCounter':
-                out, opening_brackets, closing_brackets, excess_closing_brackets = model(X[i][j].squeeze().to(device), opening_brackets, closing_brackets, excess_closing_brackets)
+                out, opening_brackets, closing_brackets, excess_closing_brackets = model(X[i][j].squeeze().to(device),
+                                                                                         opening_brackets,
+                                                                                         closing_brackets,
+                                                                                         excess_closing_brackets)
             elif model.model_name == 'TernaryLinearBracketCounter':
                 out, previous_state = model(X[i][j].squeeze().to(device), previous_state)
 
             # output_seq[j]=out
 
-
         with open(log_file, 'a') as f:
             f.write('////////////////////////////////////////\n')
             f.write('input sentence = ' + str(X[i]) + '\n')
             f.write('encoded sentence = ' + str(input_seq) + '\n')
-
-
-
 
         with open(log_file, 'a') as f:
             f.write('actual output in train function = ' + str(out) + '\n')
@@ -958,7 +937,6 @@ def test(model, X, X_notencoded, y, y_notencoded, dataset, run):
             with open(log_file, 'a') as f:
                 f.write('INCORRECT' + '\n')
 
-
         with open(log_file, 'a') as f:
             f.write('rounded output function = ' + str(out_np) + '\n')
             f.write('target = ' + str(target_np) + '\n')
@@ -981,9 +959,6 @@ def test(model, X, X_notencoded, y, y_notencoded, dataset, run):
         accuracy = num_correct / len(X) * 100
         # print('Accuracy for epoch ', epoch, '=', accuracy, '%')
 
-
-
-
     conf_matrix = sklearn.metrics.confusion_matrix(expected_classes, predicted_classes)
     heat = sns.heatmap(conf_matrix, annot=True, cbar=False, xticklabels=labels, yticklabels=labels, cmap='Blues')
     bottom1, top1 = heat.get_ylim()
@@ -991,16 +966,12 @@ def test(model, X, X_notencoded, y, y_notencoded, dataset, run):
     # plt.show()
     plt.xlabel('Predictions')
     plt.ylabel('Targets')
-    plt.savefig(prefix + '_run_' + str(run) + '_CONFUSION_MATRIX_'+dataset+'.png')
+    plt.savefig(prefix + '_run_' + str(run) + '_CONFUSION_MATRIX_' + dataset + '.png')
     plt.close()
-
-
-
 
     # print(accuracies)
     # print(accuracy)
     return accuracy
-
 
 
 def main():
@@ -1060,7 +1031,7 @@ def main():
             f.write('random seed for run ' + str(i) + ' = ' + str(seed) + '\n')
         # model = select_model(counter_input_size=counter_input_size,counter_output_size=counter_output_size,output_size=output_size, initialisation=initialisation, output_activation=output_activation)
         # print(model.model_name)
-        model=select_model()
+        model = select_model()
         model.to(device)
 
         # log_dir="logs"
@@ -1076,7 +1047,7 @@ def main():
         train_accuracies.append(train_accuracy)
         train_dataframes.append(df)
         # test_accuracy = test_model(model, test_loader, 'short')
-        test_20_accuracy = test(model, X_20,X_20_notencoded,y_20,y_20_notencoded, 'test_20', i)
+        test_20_accuracy = test(model, X_20, X_20_notencoded, y_20, y_20_notencoded, 'test_20', i)
         test_20_accuracies.append(test_20_accuracy)
         test_30_accuracy = test(model, X_30, X_30_notencoded, y_30, y_30_notencoded, 'test_30', i)
         test_30_accuracies.append(test_30_accuracy)
@@ -1136,8 +1107,6 @@ def main():
     avg_test_50_accuracy = sum(test_50_accuracies) / len(test_50_accuracies)
     std_test_50_accuracy = np.std(test_50_accuracies)
 
-
-
     with open(file_name, "a") as f:
         f.write('/////////////////////////////////////////////////////////////////\n')
         f.write('Maximum train accuracy = ' + str(max_train_accuracy) + '%\n')
@@ -1167,7 +1136,6 @@ def main():
         f.write('/////////////////////////////////////////////////////////////////\n')
 
 
-
-if __name__=='__main__':
+if __name__ == '__main__':
     main()
 
