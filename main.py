@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sklearn
 import argparse
-from models import NonZeroReLUCounter,LinearBracketCounter, TernaryLinearBracketCounter, TernaryRegressionLinearBracketCounter
+from models import NonZeroReLUCounter,LinearBracketCounter, TernaryLinearBracketCounter, TernaryRegressionLinearBracketCounter, LinearBracketCounterWithAllBiases, TernaryLinearBracketCounterWithBias
 import torch.optim as optim
 import pandas as pd
 import time
@@ -55,19 +55,19 @@ use_optimiser='Adam'
 
 if task=='Dyck1Classification':
     labels = ['valid','invalid']
-elif task=='BracketCounting':
+elif task=='BracketCounting' or task=='BracketCountingWithBias':
     labels = ['ZeroNeg', 'Pos']
-elif task=='TernaryBracketCounting':
+elif task=='TernaryBracketCounting' or task=='TenaryBracketCountingWithBias':
     labels=['Neg', 'Zero', 'Pos']
 
 def classFromOutput(output):
 
-    if task=='Dyck1Classification' or task=='BracketCounting':
+    if task=='Dyck1Classification' or task=='BracketCounting' or task=='BracketClassificationWithBias':
         if output.item() > 0.5:
             category_i = 1
         else:
             category_i = 0
-    elif task == 'TernaryBracketCounting':
+    elif task == 'TernaryBracketCounting' or task=='TernaryClassificationWithBias':
         top_n, top_i = output.topk(1)
         category_i = top_i[0].item()
         # return labels[category_i], category_i
@@ -105,7 +105,7 @@ hidden_size = 2
 counter_input_size = 3
 counter_output_size = 1
 vocab = ['(', ')']
-if task=='TernaryBracketCounting':
+if task=='TernaryBracketCounting' or task=='TernaryBracketCountingWithBias':
         output_size=3
 
 
@@ -135,7 +135,7 @@ with open(test_50_log,'w') as f:
 num_classes = 2
 n_letters = 2
 
-if task=='TernaryBracketCounting':
+if task=='TernaryBracketCounting' or task=='TernaryClassificationWithBias':
     num_classes=3
 
 def read_datasets():
@@ -152,6 +152,14 @@ def read_datasets():
             read_file = 'CounterDataset2TokensTernaryNoOversampling.txt'
         elif model_name=='TernaryLinearBracketCounter' and oversampling=='OversampledDataset':
             read_file = 'CounterDataset2TokensTernaryOversampledDataset.txt'
+        elif model_name=='LinearBracketCounterWithBiases' and oversampling=='OversampledDataset':
+            read_file = 'CounterDataset2Tokens.txt'
+        elif model_name=='TernaryLinearBracketCounterWithBias' and oversampling=='OversampledDataset':
+            read_file = 'CounterDataset2TokensTernaryOversampledDataset.txt'
+        elif model_name=='TernaryLinearBracketCounterWithBias' and oversampling=='NonOversampledDataset':
+            read_file = 'CounterDataset2TokensTernaryNoOversampling.txt'
+        elif model_name=='LinearBracketCounterWithBiases' and oversampling=='NonOversampledDataset':
+            read_file = 'CounterDataset2TokensNoOversampling.txt'
     elif train_seq_length==4:
         if model_name=='NonZeroReLUCounter':
             read_file = 'Dyck1Dataset4Tokens.txt'
@@ -163,6 +171,15 @@ def read_datasets():
             read_file = 'CounterDataset4TokensTernaryNoOversampling.txt'
         elif model_name=='TernaryLinearBracketCounter' and oversampling=='OversampledDataset':
             read_file = 'CounterDataset4TokensTernaryOversampledDataset.txt'
+        
+        elif model_name=='LinearBracketCounterWithBiases' and oversampling=='OversampledDataset':
+            read_file = 'CounterDataset4Tokens.txt'
+        elif model_name=='TernaryLinearBracketCounterWithBias' and oversampling=='OversampledDataset':
+            read_file = 'CounterDataset4TokensTernaryOversampledDataset.txt'
+        elif model_name=='TernaryLinearBracketCounterWithBias' and oversampling=='NonOversampledDataset':
+            read_file = 'CounterDataset4TokensTernaryNoOversampling.txt'
+        elif model_name=='LinearBracketCounterWithBiases' and oversampling=='NonOversampledDataset':
+            read_file = 'CounterDataset4TokensNoOversampling.txt'
     elif train_seq_length==8:
         if model_name=='NonZeroReLUCounter':
             read_file = 'Dyck1Dataset8Tokens.txt'
@@ -174,6 +191,16 @@ def read_datasets():
             read_file = 'CounterDataset8TokensTernaryNoOversampling.txt'
         elif model_name=='TernaryLinearBracketCounter' and oversampling=='OversampledDataset':
             read_file = 'CounterDataset8TokensTernaryOversampledDataset.txt'
+        
+        elif model_name=='LinearBracketCounterWithBiases' and oversampling=='OversampledDataset':
+            read_file = 'CounterDataset8Tokens.txt'
+        elif model_name=='TernaryLinearBracketCounterWithBias' and oversampling=='OversampledDataset':
+            read_file = 'CounterDataset8TokensTernaryOversampledDataset.txt'
+        elif model_name=='TernaryLinearBracketCounterWithBias' and oversampling=='NonOversampledDataset':
+            read_file = 'CounterDataset8TokensTernaryNoOversampling.txt'
+        elif model_name=='LinearBracketCounterWithBiases' and oversampling=='NonOversampledDataset':
+            read_file = 'CounterDataset8TokensNoOversampling.txt'
+            
     elif train_seq_length == 16:
         # if model_name == 'NonZeroReLUCounter':
         #     read_file = 'Dyck1Dataset8Tokens.txt'
@@ -236,7 +263,7 @@ def read_datasets():
                 x_50.append(sentence)
                 y_50.append(label)
 
-    elif model_name == 'LinearBracketCounter':
+    elif model_name == 'LinearBracketCounter' or model_name=='LinearBracketCounterWithBiases':
         with open('CounterDataset20Tokens.txt', 'r') as f:
             for line in f:
                 line = line.split(",")
@@ -267,7 +294,7 @@ def read_datasets():
                 label = line[1].strip()
                 x_50.append(sentence)
                 y_50.append(label)
-    elif model_name == 'TernaryLinearBracketCounter':
+    elif model_name == 'TernaryLinearBracketCounter' or model_name=='TernaryBracketCounterWithBias':
         with open('CounterDataset20TokensTernaryOversampledDataset.txt', 'r') as f:
             for line in f:
                 line = line.split(",")
@@ -334,7 +361,7 @@ def encode_sentence(sentence):
 #         return torch.tensor(1,dtype=torch.float32)
 
 def encode_labels(label):
-    if task=='TernaryBracketCounting':
+    if task=='TernaryBracketCounting' or task=='TernaryBracketCountingWithBias':
         outt = torch.zeros((len(labels)))
         outt[labels.index(label)]=1
         return outt
@@ -383,7 +410,14 @@ def select_model():
         model = TernaryLinearBracketCounter(counter_input_size=counter_input_size, counter_output_size=counter_output_size,
                                      output_size=output_size, initialisation=initialisation,
                                      output_activation=output_activation)
+    elif task=='BracketCountingWithBias':
+        model=LinearBracketCounterWithAllBiases(counter_input_size==counter_input_size, counter_input_size==counter_output_size, output_size=output_size, initialisation=initialisation, output_activation=output_activation)
 
+    elif task=='TernaryBracketCountingWithBias':
+        model = TernaryLinearBracketCounterWithBias(counter_input_size=counter_input_size,
+                                            counter_output_size=counter_output_size,
+                                            output_size=output_size, initialisation=initialisation,
+                                            output_activation=output_activation)
     return model.to(device)
 
 def asMinutes(s):
