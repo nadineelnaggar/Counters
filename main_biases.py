@@ -545,8 +545,8 @@ def train(model, X, X_notencoded, y, y_notencoded, run=0):
 
             # if model.model_name == 'TernaryLinearBracketCounter':
             #     target_seq=target_seq.argmax(dim=0).unsqueeze(dim=0)
-            print('out = ',out)
-            print('target_seq = ',target_seq)
+            # print('out = ',out)
+            # print('target_seq = ',target_seq)
 
             loss = criterion(out, target_seq)
             total_loss += loss.item()
