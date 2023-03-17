@@ -77,10 +77,11 @@ def classFromOutput(output):
     return labels[category_i], category_i
 
 
-if runtime == 'local':
-    path = "/Users/nadineelnaggar/Google Drive/PhD/EXPT_LOGS/Counters/" + str(task) + "WithBias/"
-elif runtime == 'colab':
-    path = "/content/drive/MyDrive/PhD/EXPT_LOGS/Counters/" + str(task) + "WithBias/"
+# if runtime == 'local':
+#     path = "/Users/nadineelnaggar/Google Drive/PhD/EXPT_LOGS/Counters/" + str(task) + "WithBias/"
+# elif runtime == 'colab':
+#     path = "/content/drive/MyDrive/PhD/EXPT_LOGS/Counters/" + str(task) + "WithBias/"
+path=''
 
 prefix = path + output_activation + "_activation_" + str(train_seq_length) + 'train_seq_length_' + initialisation + "_initialisation_" + str(num_epochs) + "epochs" + "_" + oversampling
 
